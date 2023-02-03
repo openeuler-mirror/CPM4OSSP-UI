@@ -1,5 +1,6 @@
 <template>
   <div class="login-wrapper">
+    <span v-if="isDevelopment || useEnvironment === 'dev'" class="server-ip" @click="setServerIpVisible = true"><a-icon type="desktop" />服务器IP: {{ serverIp }}</span>
     <a-card class="login-card" hoverable>
       <a-card-meta title="欢迎登录" style="text-align: center" description="" />
       <br>
@@ -13,6 +14,9 @@
         <a-button :loading="loading" icon="login" type="primary" html-type="submit" class="btn-login">登 录</a-button>
       </a-form>
     </a-card>
+    <a-modal v-model="setServerIpVisible" title="IP设置" @ok="handleIpSet" @keyup.native.enter="handleIpSet">
+      <server-ip-set ref="serverIpSet" />
+    </a-modal>
   </div>
 </template>
 
@@ -20,17 +24,25 @@
 import { login } from '../../api/user'
 import { checkSystem } from '../../api/install'
 import sha1 from 'sha1'
+import ServerIpSet from '@/components/serverIp/index.vue'
+import { useEnvironment } from '../../../settings'
 export default {
+  components: {
+    ServerIpSet
+  },
   data() {
     return {
       loading: false,
       loginForm: this.$form.createForm(this, { name: 'login-form' }),
       setServerIpVisible: false,
       isDevelopment: process.env.NODE_ENV === 'development',
+      serverIp: '',
+      useEnvironment
     }
   },
   created() {
     this.checkSystem()
+    this.serverIp = localStorage.getItem('mini_serverIp')
   },
   methods: {
     // 检查是否需要初始化
@@ -73,6 +85,15 @@ export default {
             this.loading = false
           })
         }
+      })
+    }，
+    handleIpSet() {
+      this.$refs.serverIpSet.handleSubmit().then(() => {
+        this.$notification.success({ message: '修改服务器IP成功' })
+        this.setServerIpVisible = false
+        location.reload()
+      }).catch(() => {
+        this.$notification.error({ message: '请输入正确的IP' })
       })
     }
   }
