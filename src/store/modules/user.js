@@ -69,6 +69,20 @@ const user = {
         })
       })
     },
+    logOut({ dispatch, commit }) {
+      return new Promise((resolve, reject) => {
+        commit('setToken', {})
+        commit('setMenus', '')
+        sessionStorage.removeItem(MENU_KEY)
+        // 调用其他 action
+        dispatch('clearTabs', true)
+        loginOut({}).then(() => {
+          resolve()
+        }).catch(() => {
+          reject()
+        })
+      })
+    }
 
   },
   getters: {
