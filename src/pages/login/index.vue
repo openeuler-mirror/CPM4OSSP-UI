@@ -45,7 +45,6 @@ export default {
     this.serverIp = localStorage.getItem('mini_serverIp')
   },
   methods: {
-    // 检查是否需要初始化
     checkSystem() {
       checkSystem().then(res => {
         if (res.code === 900) {
@@ -59,7 +58,6 @@ export default {
         }
       })
     },
-    // 登录
     handleLogin(e) {
       e.preventDefault()
       this.loginForm.validateFields((err, values) => {
@@ -75,9 +73,7 @@ export default {
                 message: res.msg,
                 duration: 2
               })
-              // 调用 store action 存储当前登录的用户名和 token
               this.$store.dispatch('login', { token: res.data.token, longTermToken: res.data.longTermToken }).then(() => {
-                // 跳转主页面
                 this.$router.push({ path: '/' })
               })
             }
@@ -86,7 +82,7 @@ export default {
           })
         }
       })
-    }，
+    },
     handleIpSet() {
       this.$refs.serverIpSet.handleSubmit().then(() => {
         this.$notification.success({ message: '修改服务器IP成功' })
