@@ -43,6 +43,9 @@
     >
       <node-operation ref="operationForm" :temp="temp" />
     </a-modal>
+    <a-drawer class="nodeManager" :title="drawerTitle" placement="right" width="100%" :visible="drawerVisible" @close="onClose">
+      <node-layout v-if="drawerVisible" :node="temp" />
+    </a-drawer>
   </div>
 </template>
 
@@ -50,10 +53,12 @@
 import { getNodeList, deleteNode, getNodeStatus, getOsVersion, editNode } from '@/api/node'
 import { isIpAndPort } from '@/utils/validate'
 import NodeOperation from './components/node_operation.vue'
+import NodeLayout from './node-layout'
 
 export default {
   components: {
-    NodeOperation
+    NodeOperation,
+    NodeLayout
   },
   data() {
     return {
@@ -76,7 +81,8 @@ export default {
         { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' }, width: 200, align: 'center' }
       ],
       timer: null,
-      editNodeVisible: false,      
+      editNodeVisible: false,
+      drawerVisible: false    
     }
   },
   watch: {
@@ -238,6 +244,25 @@ export default {
         // 节点信息处理
         this.editNodeVisible = false
         this.loadData()
+      })
+    },
+    handleNode(record) {
+      setNodeLocalIp({ nodeId: record.id, nodeIp: record.url.split(':')[0] }).then(() => {
+        this.temp = Object.assign(record)
+        this.drawerTitle = `${this.temp.name} (${this.temp.url})`
+        this.drawerVisible = true
+        let nodeId = this.$route.query.nodeId
+        if (nodeId !== record.id) {
+          this.$router.push({
+            query: { nodeId: record.id }
+          })
+        }
+      })
+    },
+    onClose() {
+      this.drawerVisible = false
+      this.$router.push({
+        query: { nodeId: null }
       })
     }
   }
