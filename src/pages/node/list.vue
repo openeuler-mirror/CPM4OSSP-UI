@@ -32,13 +32,29 @@
         </a-tooltip>
       </template>
     </a-table>
+    <a-modal
+      v-model="editNodeVisible"
+      :title="temp.title"
+      :mask-closable="false"
+      :destroy-on-close="true"
+      width="700px"
+      @keyup.native.enter="handleEditNodeOk"
+      @ok="handleEditNodeOk"
+    >
+      <node-operation ref="operationForm" :temp="temp" />
+    </a-modal>
   </div>
 </template>
 
 <script>
 import { getNodeList, deleteNode, getNodeStatus, getOsVersion, editNode } from '@/api/node'
 import { isIpAndPort } from '@/utils/validate'
+import NodeOperation from './components/node_operation.vue'
+
 export default {
+  components: {
+    NodeOperation
+  },
   data() {
     return {
       loading: false,
@@ -59,7 +75,8 @@ export default {
         { title: '超时时间', dataIndex: 'timeOut', key: 'timeOut', width: 100, ellipsis: true },
         { title: '操作', dataIndex: 'operation', key: 'operation', scopedSlots: { customRender: 'operation' }, width: 200, align: 'center' }
       ],
-      timer: null
+      timer: null,
+      editNodeVisible: false,      
     }
   },
   watch: {
@@ -190,6 +207,38 @@ export default {
         return callback(new Error('请填写正确的ip地址+端口号'))
       }
       callback()
+    },
+    handleAdd() {
+      this.temp.formData = {}
+      this.temp = {
+        type: 'add',
+        title: '注册节点',
+        formData: {
+          cycle: 0,
+          protocol: 'http',
+          openStatus: true,
+          timeOut: 0,
+          loginName: 'mpmsProxy'
+        }
+      }
+      this.editNodeVisible = true
+    },
+    handleEdit(record) {
+      this.temp = {
+        type: 'edit',
+        title: '编辑节点',
+        formData: {
+          ...record
+        }
+      }
+      this.editNodeVisible = true
+    },
+    handleEditNodeOk() {
+      this.$refs['operationForm'].handleSubmit().then(() => {
+        // 节点信息处理
+        this.editNodeVisible = false
+        this.loadData()
+      })
     }
   }
 }
