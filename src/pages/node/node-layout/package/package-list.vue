@@ -83,17 +83,33 @@
         </a-tooltip>
       </template>
     </a-table>
+    <a-modal
+      v-model="packageTaskListVisible"
+      title="任务列表"
+      :mask-closable="false"
+      :destroy-on-close="true"
+      width="900px"
+      @cancel="getTaskList"
+    >
+      <package-task-list ref="packageFrom" :node-id="node.id" />
+      <template slot="footer">
+        <a-button @click="packageTaskListVisible=false">取消</a-button>
+        <a-button type="primary" @click="setViewedAll">全部已读</a-button>
+      </template>
+    </a-modal>
   </div>
 </template>
 
 <script>
 import { getPackageList, setTaskViewed, getInstallablePackage, getUpdateablePackage } from '@/api/node_package'
 import { addPackageTask, startThread } from '@/api/node_package'
+import PackageTaskList from './package_task_list.vue'
 import { mapGetters } from 'vuex'
 import lockStatus from '../components/lock-status.vue'
 export default {
   components: {
-    lockStatus
+    lockStatus,
+    PackageTaskList
   },
   props: {
     node: {
