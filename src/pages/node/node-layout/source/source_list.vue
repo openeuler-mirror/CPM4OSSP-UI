@@ -1,11 +1,9 @@
 <template>
   <div>
-    <!-- 头部 -->
     <div class="btn-box">
       <a-button type="primary" icon="setting" @click="setSource">软件源设置</a-button>
       <lock-status :node-id="node.id" />
     </div>
-    <!-- 软件源表格数据 -->
     <a-table
       :data-source="sourceList"
       bordered
@@ -47,6 +45,20 @@
               <a-select-option value="dd">天</a-select-option>
             </a-select>
           </a-input>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+    <a-modal v-model="dbSourceSetVisible" title="标准源设置" width="70%" :destroy-on-close="true" @ok="dbSourceSetVisible = false">
+      <source-setting-data-base ref="dataBaseSourceSet" :node-id="node.id" />
+    </a-modal>
+    <a-modal v-model="sourcePlanVisible" title="软件源模板选择" :destroy-on-close="true" :confirm-loading="confirmLoading" @ok="handleSetSourcePlan">
+      <a-form-model ref="planForm" :model="planForm" :rules="{planName:[{required:true,message:'请选中软件源模板',trigger:'blur'}]}" :wrapper-col="{ span: 19 }" :label-col="{ span: 5 }">
+        <a-form-model-item label="软件源模板" prop="planName">
+          <a-select v-model="planForm.planName" placeholder="请选择需要配置的软件源模板" class="filter-item">
+            <a-select-option v-for="(item, index) in planList" :key="item.planName" :value="index+'--'+item.sourceList">
+              {{ item.planName }}
+            </a-select-option>
+          </a-select>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -156,6 +168,66 @@ export default {
         }
       })
     },
+    getPlanSourceList() {
+      getPlanSourceList().then(res => {
+        if (res && res.code === 200) {
+          this.planList = res.data
+        }
+      })
+    },
+    handleSetSourcePlan() {
+      this.$refs.planForm.validate(valid => {
+        if (valid) {
+          const params = {
+            nodeId: this.node.id,
+            mode: 'cover',
+            file: this.planForm.planName.split('--')[1]
+          }
+          this.confirmLoading = true
+          setSource(params).then(res => {
+            if (res.code === 200) {
+              this.$notification.success({ message: '配置软件源成功' })
+              this.sourcePlanVisible = false
+              this.getSource()
+            } else {
+              if (res.code === 400) {
+                this.sourcePlanVisible = false
+                this.getSource()
+              }
+              this.$notification.error({ message: res.msg || '配置软件源失败' })
+            }
+          }).finally(() => {
+            this.confirmLoading = false
+          })
+        }
+      })
+    },
+    rollbackSource() {
+      this.$confirm({
+        title: '系统提示',
+        content: '确定对该节点的软件源配置进行回滚?',
+        onOk: () => {
+          this.rollbackLoading = true
+          rollbackSourceList({ nodeId: this.node.id }).then(res => {
+            if (res.code === 200) {
+              this.$notification.success({ message: '回滚节点软件源配置成功' })
+              this.getSource()
+            } else {
+              this.$notification.error({ message: res.msg || '回滚节点软件源配置失败' })
+            }
+          }).finally(() => {
+            this.rollbackLoading = false
+          })
+        }
+      })
+    },
+    selectTimeType(val) {
+      if (val === 'ss') {
+        this.cycle = 60
+      } else {
+        this.cycle = 1
+      }
+    }
   }
 }
 </script>
