@@ -40,3 +40,19 @@
     </div>
   </div>
 </template>
+
+
+<style scoped lang="scss">
+.package{
+  height: 100%;
+}
+.filter {
+  margin-bottom: 15px;
+}
+.ant-btn {
+  margin-right: 10px;
+}
+.ant-btn.task-list-btn{
+  margin-right: 0;
+}
+</style>
