@@ -19,12 +19,22 @@
         </template>
       </a-menu>
     </a-layout-sider>
+    <a-layout-content class="layout-content jpom-node-content">
+      <welcome v-if="currentId === 'welcome'" :node="node" />
+      <source-list v-if="currentId === 'source'" :node="node" />
+    </a-layout-content>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { getNodeMenu } from '../../../api/menu'
+import Welcome from './welcome'
+import SourceList from './source/source_list.vue'
 export default {
+  components: {
+    Welcome,
+    SourceList
+  },
   props: {
     node: {
       type: Object,
