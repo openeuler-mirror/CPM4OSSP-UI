@@ -2,6 +2,11 @@
   <div>
     <div class="btn-box">
       <a-button type="primary" icon="setting" @click="setSource">软件源设置</a-button>
+      <a-button type="primary" icon="check-circle" :disabled="nodeCheck&&nodeCheck.time>0" @click="checkSourceOnce">
+        检测源配置{{ nodeCheck&&nodeCheck.time?'（'+nodeCheck.time+'s后可操作）':'' }}
+      </a-button>
+      <a-button type="primary" icon="clock-circle" @click="openScanSourceModal">定时检测源配置</a-button>
+      <a-button type="primary" icon="undo" :loading="rollbackLoading" @click="rollbackSource">回滚源配置</a-button>
       <lock-status :node-id="node.id" />
     </div>
     <a-table
@@ -165,6 +170,59 @@ export default {
           this.$notification.success({ message: '节点软件源设置成功' })
           this.sourceSettingVisible = false
           this.getSource()
+        }
+      })
+    },
+    checkSourceOnce() {
+      // 开启倒计时30秒
+      this.$store.commit('SET_CHECK_SOURCE_INTERVAL', this.node.id)
+      const param = { nodeId: this.node.id }
+      scanSourceListOnce(param).then(res => {
+        if (res.code === 200) {
+          this.$notification.success({ message: res.msg })
+          this.scanSourceListVisible = false
+        }
+      })
+    },
+    openScanSourceModal() {
+      this.scanSourceListVisible = true
+      getScanSource({ nodeId: this.node.id }).then(res => {
+        if (res.code === 200) {
+          this.openCycle = res.data.isFlag === '1'
+          if (!this.openCycle) {
+            this.cycle = 60
+            this.cycleType = 'ss'
+          } else {
+            this.cycle = res.data.Cycle
+            this.cycleType = res.data.cycleType
+          }
+        }
+      })
+    },
+    scanSourceOk() {
+      if (this.openCycle) {
+        if (this.cycleType === 'ss' && (this.cycle < 60 || this.cycle > 30 * 24 * 60 * 60)) {
+          this.$notification.error({ message: '周期间隔请保证60~2592000秒钟之间' })
+          return
+        }
+        if (this.cycleType === 'mm' && (this.cycle < 1 || this.cycle > 30 * 24 * 60)) {
+          this.$notification.error({ message: '周期间隔请保证1~43200分钟之间' })
+          return
+        }
+        if (this.cycleType === 'hh' && (this.cycle < 1 || this.cycle > 30 * 24)) {
+          this.$notification.error({ message: '周期间隔请保证1~720小时之间' })
+          return
+        }
+        if (this.cycleType === 'dd' && (this.cycle < 1 || this.cycle > 30)) {
+          this.$notification.error({ message: '周期间隔请保证1~30天之间' })
+          return
+        }
+      }
+      const param = { nodeId: this.node.id, isFlag: this.openCycle ? 1 : 0, Cycle: this.cycle, cycleType: this.cycleType }
+      scanSourceListCycle(param).then(res => {
+        if (res.code === 200) {
+          this.$notification.success({ message: (this.openCycle ? '开启' : '关闭') + '周期检测软件源配置成功' })
+          this.scanSourceListVisible = false
         }
       })
     },
