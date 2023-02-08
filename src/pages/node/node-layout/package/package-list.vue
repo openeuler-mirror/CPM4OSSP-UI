@@ -275,6 +275,51 @@ export default {
         }
       }
     },
+    batchDelete() {
+      this.$confirm({
+        title: '提示',
+        content: '确定卸载所选中的软件包吗?',
+        onOk: () => {
+          let list = []
+          let message = ''
+          list = this.selectedPackageList.map((item, index) => {
+            if (item.status !== 'ii' || item.classification === 'important' || item.classification === 'necessary') {
+              message = item.name + ':该软件包不可卸载'
+            }
+            const tem = {
+              nodeId: this.node.id,
+              taskAction: 'uninstall',
+              taskTarget: item.name
+            }
+            return tem
+          })
+          if (message !== '') {
+            this.$notification.error({ message })
+            return
+          }
+          const param = {
+            nodeId: this.node.id,
+            taskList: list
+          }
+          addPackageTask(param).then(res => {
+            if (res.code === 200) {
+              this.$notification.success({
+                message: '添加软件包卸载任务成功'
+              })
+              this.getTaskList()
+              this.rowKeys = []
+              this.selectedPackageList = []
+            } else {
+              this.$notification.warning({
+                message: '添加软件包卸载任务失败' + res.msg
+              })
+            }
+          })
+        },
+        onCancel: function() {
+        }
+      })
+    },
     showTaskList() {
       this.packageTaskListVisible = true
     },
