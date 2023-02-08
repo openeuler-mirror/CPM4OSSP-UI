@@ -30,16 +30,38 @@
         </template>
       </a-tooltip>
     </a-table>
+    <a-modal v-model="sourceSettingVisible" width="70%" title="软件源设置" :destroy-on-close="true" @ok="sourceSettingOk">
+      <source-setting ref="sourceSetting" :node-id="node.id" />
+    </a-modal>
+    <a-modal v-model="scanSourceListVisible" title="设置检测周期" @ok="scanSourceOk">
+      <a-form-model :label-col="{span: 5}" :wrapper-col="{span: 19}" label-align="right">
+        <a-form-model-item label="检测周期">
+          <a-switch v-model="openCycle" checked-children="开启" un-checked-children="停用" />
+        </a-form-model-item>
+        <a-form-model-item v-show="openCycle" label="周期间隔">
+          <a-input v-model="cycle" type="number" class="input" placeholder="请输入周期时间">
+            <a-select slot="addonAfter" v-model="cycleType" style="width: 70px" @select="selectTimeType">
+              <a-select-option value="ss">秒</a-select-option>
+              <a-select-option value="mm">分</a-select-option>
+              <a-select-option value="hh">时</a-select-option>
+              <a-select-option value="dd">天</a-select-option>
+            </a-select>
+          </a-input>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
 <script>
 import { getSource, scanSourceListOnce, scanSourceListCycle, getScanSource, setSource, rollbackSourceList } from '@/api/node_source'
 import { getPlanSourceList } from '@/api/repository'
+import SourceSetting from './source_setting.vue'
 import lockStatus from '../components/lock-status.vue'
 export default {
   components: {
-    lockStatus
+    lockStatus，
+    SourceSetting
   },
   props: {
     node: {
@@ -124,7 +146,16 @@ export default {
     },
     setSource() {
       this.sourcePlanVisible = true
-    }
+    },
+    sourceSettingOk() {
+      this.$refs['sourceSetting'].handleSet().then((res) => {
+        if (res.code === 200) {
+          this.$notification.success({ message: '节点软件源设置成功' })
+          this.sourceSettingVisible = false
+          this.getSource()
+        }
+      })
+    },
   }
 }
 </script>
