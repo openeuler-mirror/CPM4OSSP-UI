@@ -36,7 +36,11 @@
 <script>
 import { getSource, scanSourceListOnce, scanSourceListCycle, getScanSource, setSource, rollbackSourceList } from '@/api/node_source'
 import { getPlanSourceList } from '@/api/repository'
+import lockStatus from '../components/lock-status.vue'
 export default {
+  components: {
+    lockStatus
+  },
   props: {
     node: {
       type: Object,
