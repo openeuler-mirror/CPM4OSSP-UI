@@ -84,6 +84,18 @@
       </template>
     </a-table>
     <a-modal
+      v-model="batchInstallVisible"
+      width="800px"
+      :mask-closable="false"
+      :centered="true"
+      title="软件包安装"
+      ok-text="安装"
+      :destroy-on-close="true"
+      @ok="toInstall"
+    >
+      <package-batch-install ref="packageForm" :node-id="node.id" />
+    </a-modal>
+    <a-modal
       v-model="packageTaskListVisible"
       title="任务列表"
       :mask-closable="false"
@@ -104,12 +116,14 @@
 import { getPackageList, setTaskViewed, getInstallablePackage, getUpdateablePackage } from '@/api/node_package'
 import { addPackageTask, startThread } from '@/api/node_package'
 import PackageTaskList from './package_task_list.vue'
+import PackageBatchInstall from './package_batch_install.vue'
 import { mapGetters } from 'vuex'
 import lockStatus from '../components/lock-status.vue'
 export default {
   components: {
     lockStatus,
-    PackageTaskList
+    PackageTaskList,
+    PackageBatchInstall
   },
   props: {
     node: {
