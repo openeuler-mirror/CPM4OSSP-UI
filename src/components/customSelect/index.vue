@@ -33,4 +33,56 @@
 
 <script>
 import { Select } from 'ant-design-vue'
+  components: {
+    Select,
+    VNodes: {
+      functional: true,
+      render: (h, ctx) => ctx.props.vnodes
+    }
+  },
+    props: {
+    // 继承原组件所有props
+    ...Select.props,
+    data: {
+      type: Array,
+      default: () => []
+    },
+    inputPlaceholder: {
+      type: String,
+      default: '请输入...'
+    },
+    selectPlaceholder: {
+      type: String,
+      default: '请选择'
+    }
+  },
+    data() {
+    return {
+      selectInput: '',
+      selectOpen: false,
+      selectFocus: false,
+      inputFocus: false,
+      optionList: [],
+      selected: ''
+    }
+  },
+  watch: {
+    value: {
+      handler(v) {
+        this.selected = v
+      },
+      immediate: true
+    },
+    data: {
+      handler(v) {
+        this.optionList = v
+      },
+      deep: true,
+      immediate: true
+    }
+  },
+
+  methods: {
+
+  }
 </script>
