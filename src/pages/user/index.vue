@@ -97,6 +97,26 @@ export default {
     handleEditUserOk() {
       this.$refs.userAdd.formSubmit()
     },
+    handleDelete(record) {
+      this.$confirm({
+        title: '系统提示',
+        content: '真的要删除用户么？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          // 删除
+          deleteUser(record.id).then((res) => {
+            if (res.code === 200) {
+              this.$notification.success({
+                message: res.msg,
+                duration: 2
+              })
+              this.loadData()
+            }
+          })
+        }
+      })
+    }
   }
 }
 </script>
