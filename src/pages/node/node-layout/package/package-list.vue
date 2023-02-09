@@ -29,6 +29,7 @@
           {{ item.label }}
         </a-select-option>
       </a-select>
+      <a-button type="primary" icon="tool" @click="batchInstall">软件包安装</a-button>
       <a-badge :count="upgradeNum" :title="'可升级软件数'+upgradeNum">
         <a-button class="task-list-btn" type="primary" icon="rise" @click="updatePackageVisible = true">软件包升级</a-button>
       </a-badge>
@@ -109,6 +110,15 @@
         <a-button type="primary" @click="setViewedAll">全部已读</a-button>
       </template>
     </a-modal>
+    <a-modal
+      v-model="updatePackageVisible"
+      title="可升级软件包列表"
+      :destroy-on-close="true"
+      width="800px"
+      @ok="handleUpdate"
+    >
+      <updateable-package-list ref="updateModal" :node-id="node.id" />
+    </a-modal>
   </div>
 </template>
 
@@ -117,13 +127,15 @@ import { getPackageList, setTaskViewed, getInstallablePackage, getUpdateablePack
 import { addPackageTask, startThread } from '@/api/node_package'
 import PackageTaskList from './package_task_list.vue'
 import PackageBatchInstall from './package_batch_install.vue'
+import UpdateablePackageList from './updateable_package_list.vue'
 import { mapGetters } from 'vuex'
 import lockStatus from '../components/lock-status.vue'
 export default {
   components: {
     lockStatus,
     PackageTaskList,
-    PackageBatchInstall
+    PackageBatchInstall,
+    UpdateablePackageList
   },
   props: {
     node: {
@@ -263,6 +275,55 @@ export default {
       this.listQuery.page = pagination.current
       this.listQuery.limit = pagination.pageSize
       this.loadData()
+    },
+    handleDelete(record) {
+      this.$confirm({
+        title: '系统提示',
+        content: '确定卸载该软件包么？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          // 组装参数
+          const param = {
+            nodeId: this.node.id,
+            taskList: [
+              {
+                taskTarget: record.name,
+                nodeId: this.node.id,
+                taskAction: 'uninstall'
+              }
+            ]
+          }
+          addPackageTask(param).then(res => {
+            if (res.code === 200) {
+              this.$notification.success({ message: '添加软件包卸载任务成功' })
+              this.getTaskList()
+            } else {
+              this.$notification.warning({
+                message: '添加软件包卸载任务失败' + res.msg
+              })
+            }
+          })
+        }
+      })
+    },
+    batchInstall() {
+      this.batchInstallVisible = true
+    },
+    toInstall() {
+      this.$refs['packageForm'].handleInstall().then((res) => {
+        if (res.code === 200) {
+          this.batchInstallVisible = false
+          this.$notification.success({
+            message: '添加软件包安装任务成功'
+          })
+          this.getTaskList()
+        } else {
+          this.$notification.warning({
+            message: '添加软件包安装任务失败' + res.msg
+          })
+        }
+      })
     },
     onSelectChange(row, packageRow) {
       this.rowKeys = row
