@@ -108,6 +108,23 @@ export default {
     border: 1px solid #c0c0c0;
     border-top: none;
     transition: all 2s;
+    .none{
+      color: rgba(0, 0, 0, 0.25);
+      text-align: center;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .list-item{
+      font-family: 'Poppins,sans-serif';
+      padding: 5px 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      &:hover{
+        background: #E6F7FF;
+        cursor: pointer;
+      }
+    }
     .ant-list-item{
       display: flex;
       flex-direction: column;
