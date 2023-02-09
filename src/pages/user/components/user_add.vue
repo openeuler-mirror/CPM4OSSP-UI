@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-form-model ref="editUserForm" :model="temp" :label-col="{ span: 4}" :wrapper-col="{ span: 20 }">
+    <a-form-model ref="editUserForm" :rules="rules" :model="temp" :label-col="{ span: 4}" :wrapper-col="{ span: 20 }">
       <a-form-model-item label="用户名称" prop="id">
         <a-input v-model="temp.id" placeholder="创建之后不能修改" :disabled="createOption == false" />
       </a-form-model-item>
@@ -27,7 +27,34 @@ export	default	{
     }
   },
   data()	{
+    const pwdValidate = (rule, value, callback) => {
+      const reg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~!@#$%^&*])[\da-zA-Z~!@#$%^&*]{9,50}$/
+      if (!reg.test(value)) {
+        callback(new Error('密码至少包含大小写字母、数字、特殊字符，长度为9~50'))
+      }
+      callback()
+    }
+    const confirmValidate = (rule, value, callback) => {
+      if (value !== this.temp.password) {
+        callback(new Error('两次密码不一致'))
+      }
+      callback()
+    }
     return	{
+      rules: {
+        id: [
+          { required: true, message: '用户名称不能为空', trigger: 'blur' },
+          { min: 3, max: 20, message: '用户名称长度为3~20位', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '登录密码不能为空', trigger: 'blur' },
+          { validator: pwdValidate, trigger: 'blur' }
+        ],
+        confirmPassword: [
+          { required: true, message: '确认密码不能为空', trigger: 'blur' },
+          { validator: confirmValidate, trigger: 'blur' }
+        ]
+      },
       temp: {},
       createOption: true
     }
