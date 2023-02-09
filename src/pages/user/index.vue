@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { getUserList } from '../../api/user'
+import { getUserList, deleteUser, unlockUser } from '../../api/user'
 import { parseTime } from '../../utils/time'
 import userAdd from './components/user_add.vue'
 export default {
@@ -106,6 +106,26 @@ export default {
         onOk: () => {
           // 删除
           deleteUser(record.id).then((res) => {
+            if (res.code === 200) {
+              this.$notification.success({
+                message: res.msg,
+                duration: 2
+              })
+              this.loadData()
+            }
+          })
+        }
+      })
+    },
+    handleUnlock(record) {
+      this.$confirm({
+        title: '系统提示',
+        content: '真的要解锁用户么？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          // 解锁用户
+          unlockUser(record.id).then(res => {
             if (res.code === 200) {
               this.$notification.success({
                 message: res.msg,
