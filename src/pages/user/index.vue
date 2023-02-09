@@ -28,13 +28,20 @@
         </a-tooltip>
       </template>
     </a-table>
+    <a-modal v-model="editUserVisible" :title="title" :mask-closable="false" @keyup.native.enter="handleEditUserOk" @ok="handleEditUserOk">
+      <user-add ref="userAdd" :row-data="rowData" @on-refresh="refreshTable" />
+    </a-modal
   </div>
 </template>
 
 <script>
 import { getUserList } from '../../api/user'
 import { parseTime } from '../../utils/time'
+import userAdd from './components/user_add.vue'
 export default {
+  components: {
+    userAdd
+  },
   data() {
     return {
       loading: false,
@@ -73,9 +80,22 @@ export default {
         this.loading = false
       })
     },
+    handleAdd() {
+      this.title = '新增用户'
+      this.rowData = {}
+      this.editUserVisible = true
+    },
+    handleEdit(record) {
+      this.title = '编辑用户'
+      this.rowData = Object.assign(record)
+      this.editUserVisible = true
+    },
     refreshTable() {
       this.editUserVisible = false
       this.loadData()
+    },
+    handleEditUserOk() {
+      this.$refs.userAdd.formSubmit()
     },
   }
 }
