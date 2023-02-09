@@ -21,6 +21,7 @@
     </a-layout-sider>
     <a-layout-content class="layout-content jpom-node-content">
       <welcome v-if="currentId === 'welcome'" :node="node" />
+      <package-list v-if="currentId === 'package'" :node="node" />
       <source-list v-if="currentId === 'source'" :node="node" />
     </a-layout-content>
 </template>
@@ -29,10 +30,12 @@
 import { mapGetters } from 'vuex'
 import { getNodeMenu } from '../../../api/menu'
 import Welcome from './welcome'
+import PackageList from './package/package-list.vue'
 import SourceList from './source/source_list.vue'
 export default {
   components: {
     Welcome,
+    PackageList
     SourceList
   },
   props: {
