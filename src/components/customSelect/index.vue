@@ -90,5 +90,33 @@ import { Select } from 'ant-design-vue'
       this.$emit('input', v)
       this.selectOpen = false
     },
+    onSearch(v) {
+      if (!v) {
+        return
+      }
+      let index = this.optionList.indexOf(v)
+      if (index === -1) {
+        this.optionList = [...this.optionList, v]
+      }
+      this.selectInput = ''
+      this.selected = v
+      this.selectChange(v)
+    },
+    setSelectOpen(v) {
+      this.selectFocus = v
+      if (this.inputFocus || this.selectFocus) {
+        this.selectOpen = true
+        return
+      }
+      this.selectOpen = false
+    },
+    visibleInput(v) {
+      this.inputFocus = v
+      if (this.inputFocus || this.selectFocus) {
+        this.selectOpen = true
+        return
+      }
+      this.selectOpen = false
+    }
   }
 </script>
