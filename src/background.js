@@ -16,8 +16,7 @@ async function createWindow() {
     height: 1000,
     show: false,
     backgroundColor: '#2e2c29',
-    icon: path.join(__dirname, './bundled/favicon.ico'),
-    title: '凝思系统软件安装管理平台',
+    title: '系统软件安装管理平台',
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
@@ -53,13 +52,8 @@ async function createWindow() {
     mainWin.maximize()
     mainWin.show()
   })
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // await mainWin.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    // if (!process.env.IS_TEST) mainWin.webContents.openDevTools()
-  } else {
-    createProtocol('app')
-    mainWin.loadURL('app://./index.html')
-  }
+  createProtocol('app')
+  mainWin.loadURL('app://./index.html')
   toOpenDevTools = function() {
     mainWin.webContents.openDevTools()
   }
@@ -81,14 +75,6 @@ app.on('activate', () => {
 })
 
 app.on('ready', async() => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
-    try {
-      // await installExtension(VUEJS_DEVTOOLS)
-    } catch (e) {
-      console.error('Vue Devtools failed to install:', e.toString())
-    }
-  }
   createWindow()
 })
 
