@@ -83,6 +83,12 @@ import { Select } from 'ant-design-vue'
   },
 
   methods: {
-
+    refreshSelect() {
+      this.$emit('onRefreshSelect')
+    },
+    selectChange(v) {
+      this.$emit('input', v)
+      this.selectOpen = false
+    },
   }
 </script>
