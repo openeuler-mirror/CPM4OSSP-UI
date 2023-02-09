@@ -91,3 +91,88 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .list-wrap{
+    position: absolute;
+    width: 583px;
+    min-height: 100px;
+    max-height: 360px;
+    overflow-y: auto;
+    background: #fff;
+    left:0px;
+    // transform: translateX(-45%);
+    z-index: 999;
+    top: 28px;
+    border-radius: 5px;
+    border: 1px solid #c0c0c0;
+    border-top: none;
+    transition: all 2s;
+    .none{
+      color: rgba(0, 0, 0, 0.25);
+      text-align: center;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+    .list-item{
+      font-family: 'Poppins,sans-serif';
+      padding: 5px 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      &:hover{
+        background: #E6F7FF;
+        cursor: pointer;
+      }
+    }
+    .ant-list-item{
+      display: flex;
+      flex-direction: column;
+      &:last-child{
+        border-bottom: 1px solid #e8e8e8;
+      }
+      .title{
+        color: #000;
+      }
+      .top{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      .bottom{
+        padding: 10px 0;
+        width: 100%;
+        height: 50%;
+      }
+      .more{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        > span{
+          display: flex;
+          > span:last-child{
+            display: flex;
+            flex-wrap: wrap;
+            > span{
+              display: inline-block;
+              margin-bottom: 5px;
+            }
+          }
+        }
+      }
+      > span{
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+      }
+    .Version{
+      font-size: 12px;
+    }
+    .Architecture{
+      font-size: 13px;
+      float: right;
+    }
+    }
+  }
+</style>
