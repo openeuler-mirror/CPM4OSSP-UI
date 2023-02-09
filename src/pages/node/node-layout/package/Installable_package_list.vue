@@ -22,3 +22,72 @@
     </a-list>
   </div>
 </template>
+
+<script>
+import { queryDependency } from '@/api/node_package'
+export default {
+  props: {
+    inputvalue: {
+      type: String,
+      default: ''
+    },
+    list: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
+    nodeId: {
+      type: String,
+      default: ''
+    }
+  },
+  watch: {
+    inputvalue(val) {
+      if (val) {
+        // 回到顶部
+        this.$nextTick(() => {
+          document.querySelector('.list-wrap').scrollTop = 0
+        })
+      }
+    }
+  },
+  methods: {
+    handleClick(packageName) {
+      this.$emit('handleInputValue', packageName)
+    },
+    loadMore(data) {
+      this.$set(data, 'loading', true)
+      queryDependency({ packageName: data.Package, nodeId: this.nodeId }).then(res => {
+        if (res.code === 200) {
+          if (res.data) {
+            const result = []
+            const dependency = res.data[data.Package]
+            for (let dep of dependency) {
+              for (let key in dep) {
+                const value = dep[key]
+                if (typeof value === 'object') {
+                  for (let key1 in value) {
+                    for (let item of value[key1]) {
+                      result.push(key.replace('|', '') + '：' + item)
+                    }
+                  }
+                } else {
+                  result.push(key.replace('|', '') + '：' + value)
+                }
+              }
+            }
+            this.$set(data, 'dependency', result)
+          } else {
+            this.$set(data, 'dependency', {})
+          }
+        } else {
+          this.$notification.error({ message: res.msg || '获取关联软件包失败' })
+        }
+      }).finally(() => {
+        this.$delete(data, 'loading')
+      })
+    }
+  }
+}
+</script>
