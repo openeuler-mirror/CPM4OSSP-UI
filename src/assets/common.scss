@@ -50,4 +50,28 @@ body{
       }
     }
   }
+  .drawerFooter {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid;
+    padding: 10px 16px;
+    text-align: right;
+    z-index: 1;
+  }
+  .layout-content{
+    background-size: cover;
+    .wrap{
+        height: 100%;
+        width: 100%;
+        padding: 15px;
+        border-radius: 15px;
+        overflow: hidden !important;
+        .filter{
+          padding: 15px 0 15px 10px;
+          border-bottom: 1px solid;
+        }
+    }
+  }
 }
