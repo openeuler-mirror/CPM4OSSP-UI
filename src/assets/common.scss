@@ -18,4 +18,36 @@ body{
       }
     }
   }
+  .nodeManager {
+    &.ant-drawer{
+      .ant-drawer-content-wrapper {
+        .ant-drawer-content {
+          .ant-drawer-wrapper-body {
+            padding-top: 55px;
+            .ant-drawer-header {
+              width: 100%;
+              position: absolute;
+              top: 0;
+              z-index: 1;
+              border-radius: 0px;
+            }
+            .ant-drawer-body {
+              box-sizing: border-box;
+              padding: 0;
+              overflow: auto;
+            }
+          }
+        }
+      }
+      .layout-content{
+        background: #fff;
+      }
+      .ant-layout-sider{
+        background: #fff;
+      }
+      .ant-menu-item.ant-menu-item-selected{
+        background: #e6f7ff;
+      }
+    }
+  }
 }
