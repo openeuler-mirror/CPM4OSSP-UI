@@ -121,4 +121,38 @@ body{
       }
     }
   }
+  .ant-input-wrapper{
+    .ant-input-group-addon{
+      border-radius: 0 20px 20px 0;
+    }
+  }
 }
+.ant-form{
+  .ant-form-item{
+    .ant-form-item-label{
+      text-align: center;
+    }
+  }
+}
+.ant-tabs{
+  &.ant-tabs-left{
+    .ant-tabs-tab{
+      text-align: center;
+    }
+  }
+}
+  .ant-table {
+    //   表头
+    .ant-table-header {
+      // &.ant-table-hide-scrollbar{
+      //   padding-right: 0 !important;
+      // }
+        thead {
+          tr {
+            th {
+              padding: 14px 16px;
+            }
+          }
+        }
+    }
+  }
