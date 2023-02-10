@@ -229,6 +229,24 @@ body{
         }
       }
     }
-
+    &.ant-menu-submenu-open{
+      &:hover{
+        span{
+          span{
+            margin-left: 0;
+            &::after{
+              width: 0px;
+            }
+          }
+        }
+      }
+    }
+    .ant-menu-submenu-title{
+      span{
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+      }
+    }
   }
 }
