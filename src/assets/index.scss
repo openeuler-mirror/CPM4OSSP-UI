@@ -56,3 +56,16 @@ html {
 .width-300{
   width: 300px;
 }
+.ant-form-item.customize{
+  border-color: #F56C6C;
+  margin-bottom: 0px!important;
+  :hover{
+    border-color: #F56C6C;
+  }
+  &::after{
+    display: inline-block;
+    content: '请完成该项的填写!';
+    color: #F56C6C;
+    font-size: 12px;
+  }
+}
