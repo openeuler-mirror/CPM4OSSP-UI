@@ -1,3 +1,18 @@
+$blue-theme: #377bc9;
+$blue-theme-hover: #00337a;
+$blue-theme-rgb: rgba($color: $blue-theme, $alpha: 0.2);
+$blue-sider-bg: #00337a;
+$blue-sider-active-bg: #5e9ce7;
+$blue-disable-color: #6c757d;
+$blue-success-color: #4EB4A5;
+$blue-danger-color: #dc3545;
+$blue-warning-color: #E3AA75;
+$blue-info-color: #4B98CF;
+$blue-light-border-color: #DCE0E2;
+$blue-dark-color: #1A3142;
+$blue-gray-color:#909399;
+$blue-theme-rgb1: rgba($color: $blue-theme, $alpha: 0.05);
+
 body[data-theme='blue'] {
 
 }
