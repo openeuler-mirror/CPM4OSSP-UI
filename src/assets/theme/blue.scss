@@ -36,4 +36,23 @@ body[data-theme='blue'] {
     color: $blue-warning-color;
     font-size: 12px;
   }
+
+  .ant-radio-group{
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before{
+      background-color: $blue-theme;
+    }
+    span {
+      color: $blue-theme;
+    }
+    .ant-radio-button-wrapper:first-child{
+      border-radius: 20px 0 0 20px;
+    }
+    .ant-radio-button-wrapper:last-child{
+      border-radius: 0 20px 20px 0;
+    }
+    .ant-radio-button-wrapper-checked {
+      border: 1px solid $blue-theme;
+    }
+  }
+  
 }
