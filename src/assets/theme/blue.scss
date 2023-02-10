@@ -14,5 +14,26 @@ $blue-gray-color:#909399;
 $blue-theme-rgb1: rgba($color: $blue-theme, $alpha: 0.05);
 
 body[data-theme='blue'] {
-
+  .info{
+      color: $blue-info-color !important;
+    }
+  .warning{
+    color: $blue-warning-color !important;
+  }
+  .danger{
+    color: $blue-danger-color !important;
+  }
+  .success{
+    color: $blue-success-color !important;
+  }
+  .primary {
+    color: rgba($color: #1890ff, $alpha: 0.7) !important;
+  }
+  .gray {
+    color: $blue-gray-color;
+  }
+  .warning-small{
+    color: $blue-warning-color;
+    font-size: 12px;
+  }
 }
