@@ -238,5 +238,42 @@ body[data-theme='blue'] {
     }
   }
 
+  .ant-select-selection{
+    border-radius: 20px;
+  }
+  .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active{
+    border-color: $blue-theme !important;
+      box-shadow: none;
+  }
+  .ant-form-item-control{
+    .ant-select-selection {
+      border-radius: 20px !important;
+      &:hover {
+        border-color: $blue-theme;
+        box-shadow: 0 0 0 2px $blue-theme-rgb;
+      }
+    }
+    &.has-error{
+      .ant-input{
+        border-color: $blue-danger-color;
+        &:hover{
+          border-color: $blue-danger-color;
+        }
+        &:focus{
+          border-color: $blue-danger-color;
+        }
+      }
+    }
+  }
   
+  .ant-switch{
+    &.ant-switch-checked{
+      background-color: $blue-theme;
+    }
+  }
+  .header-text{
+    &:hover{
+      color: $blue-theme;
+    }
+  }
 }
