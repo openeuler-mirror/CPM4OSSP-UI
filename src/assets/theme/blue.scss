@@ -423,4 +423,19 @@ body[data-theme='blue'] {
 }
 }
 
+.login-wrapper{
+  background-image: url('./images/blue/login-bg.png');
+  .server-ip{
+      color: #fff;
+    }
+  .login-card{
+    background: rgba($color: #fff, $alpha: 0.2);
+    box-shadow: 0px 0px 100px rgba($color: $blue-theme, $alpha: 0.1);
+  }
+  .btn-login{
+    background: rgba($color: $blue-theme-hover, $alpha: 0.8);
+  }
+}
+
+
 }
