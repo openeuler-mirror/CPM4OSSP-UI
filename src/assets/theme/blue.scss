@@ -378,5 +378,49 @@ body[data-theme='blue'] {
   }
 }
 
+.app-header{
+.ant-tabs {
+  .ant-tabs-nav-wrap{
+    .ant-tabs-tab{
+        background: rgba($color: #fff, $alpha: 0);
+        border-color: rgba($color: #fff, $alpha: 0.5);
+        color: #fff;
+        i{
+          color: #fff;
+          &:hover{
+              color: $blue-theme-hover;
+          }
+        }
+      &:hover{
+        color: $blue-theme-hover;
+      }
+      &.ant-tabs-tab-active{
+        background: rgba($color: #fff, $alpha: 0.9);
+        color: $blue-theme;
+        i{
+          color: $blue-theme;
+        }
+      }
+    }
+  }
+}
+  background: url('../assets/images/blue/navbar-bg.png');
+  i{
+      color: #fff;
+  }
+  .user-header{
+      span{
+          color: #fff;
+          &:hover{
+              color: $blue-theme-hover;
+          }
+      }
+  }
+.trigger{
+  &:hover{
+      color: $blue-theme;
+  }
+}
+}
 
 }
