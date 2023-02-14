@@ -345,4 +345,38 @@ body[data-theme='blue'] {
   .ant-calendar-range .ant-calendar-in-range-cell::before{
     background: $blue-theme-rgb;
   }
+
+  .ant-drawer-content-wrapper {
+    .ant-drawer-content {
+      .ant-drawer-wrapper-body {
+        .ant-drawer-header {
+          background: $blue-theme;
+          .ant-drawer-title {
+            color: #ffffff;
+          }
+          & button {
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+.drawerFooter {
+    border-color: $blue-theme;
+    background: #ffffff;
+  }
+
+.layout-content{
+  background: url('../assets/images/blue/content-bg.png');
+  .wrap{
+      background: rgba($color: #fff, $alpha: 0.9);
+      overflow-y: scroll;
+      box-shadow: 5px 3px 0px rgba($color: #999, $alpha: 0.5);
+      .filter{
+        border-color: $blue-theme;
+      }
+  }
+}
+
+
 }
