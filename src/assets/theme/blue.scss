@@ -87,4 +87,41 @@ body[data-theme='blue'] {
     }
   }
   
+  .ant-layout-sider{
+      border-right: 1px solid rgba($color: #eee, $alpha: 0.1);
+      background: url('../assets/images/blue/sider-bg.png');
+      .side-menu {
+          background: transparent;
+      }
+  }
+  .side-menu{
+    .ant-menu-submenu{
+        margin: 15px 0;
+      .ant-menu{
+        .ant-menu-item{
+            margin: 0;
+            background: $blue-sider-bg;
+          &.ant-menu-item-selected{
+            background-color: $blue-sider-active-bg;
+          }
+        }
+      }
+    }
+  }
+  .ant-menu-item{
+      &.ant-menu-item-selected{
+        background-color: $blue-sider-active-bg;
+        &::after{
+          background-color: $blue-theme-hover;
+        }
+      }
+  }
+  .ant-menu-submenu-popup {
+    &.ant-menu-dark { 
+      .ant-menu-item-selected {
+        background-color: $blue-sider-active-bg
+      }
+    }
+  }
+
 }
