@@ -55,4 +55,36 @@ body[data-theme='blue'] {
     }
   }
   
+  .ant-tag{
+    &.info{
+      background-color: #fff !important;
+      border-color: $blue-light-border-color;
+    }
+    &.success{
+      background-color: $blue-success-color;
+      border-color: $blue-success-color;
+      color: #fff !important;
+    }
+    &.danger{
+      background-color: $blue-danger-color;
+      border-color: $blue-danger-color;
+      color: #fff !important;
+    }
+    &.warning{
+      background-color: $blue-warning-color;
+      border-color: $blue-warning-color;
+      color: #fff !important;
+    }
+    &.gray {
+      background-color: $blue-gray-color;
+      border-color: $blue-gray-color;
+      color: #fff !important;
+    }
+    &.dark {
+      background-color: $blue-dark-color;
+      border-color: $blue-dark-color;
+      color: #fff !important;
+    }
+  }
+  
 }
