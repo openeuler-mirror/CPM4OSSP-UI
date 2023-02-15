@@ -534,5 +534,27 @@ body[data-theme='blue'] {
     }
   }
 
+  .ant-radio-wrapper{
+    .ant-radio{
+      .ant-radio-inner{
+        &::after{
+          background-color: $blue-theme;
+        }
+        border-color: $blue-theme;
+      }
+    }
+  }
+  .ant-tabs-nav .ant-tabs-tab{
+    &.ant-tabs-tab-active{
+      color: $blue-theme;
+    }
+    &:hover{
+      color: $blue-theme;
+    }
+  }
+  .ant-tabs-ink-bar{
+    background-color: $blue-theme;
+  }
+
 
 }
