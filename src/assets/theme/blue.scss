@@ -556,5 +556,23 @@ body[data-theme='blue'] {
     background-color: $blue-theme;
   }
 
+  .ant-modal{
+    .ant-modal-close{
+      i{
+        color: #ffffff;
+      }
+    }
+    .ant-modal-header{
+      background-color: $blue-theme;
+      border-bottom-color: $blue-theme;
+      .ant-modal-title{
+        color: #ffffff;
+      }
+    }
+    .ant-modal-footer {
+      border-top-color: $blue-theme;
+    }
+  }
+
 
 }
