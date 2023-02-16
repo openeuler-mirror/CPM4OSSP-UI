@@ -129,3 +129,28 @@ $dark-color: #1A3142;
 
   }
 }
+
+.side-menu{
+  .ant-menu-submenu{
+    .ant-menu{
+      .ant-menu-item{
+        &.ant-menu-item-selected{
+          background-color: $defult-color;
+        }
+      }
+    }
+  }
+  .ant-menu-item{
+    &.ant-menu-item-selected{
+      background-color: $defult-color;
+    }
+  }
+}
+
+.ant-menu-submenu-popup {
+  &.ant-menu-dark {
+    .ant-menu-item-selected {
+      background-color: $defult-color;
+    }
+  }
+}
