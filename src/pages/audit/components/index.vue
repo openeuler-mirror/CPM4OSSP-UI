@@ -29,3 +29,16 @@ export	default	{
   }
 }
 </script>
+
+<style scoped>
+.ant-list-item-meta {
+  width: 100%;
+}
+.ant-list-item-meta-content {
+  width: 100%;
+}
+.ant-list-item-meta-description {
+  max-height: 200px;
+  overflow-y: auto;
+}
+</style>
