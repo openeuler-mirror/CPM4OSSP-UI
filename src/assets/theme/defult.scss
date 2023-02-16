@@ -154,3 +154,22 @@ $dark-color: #1A3142;
     }
   }
 }
+
+.ant-pagination{
+  .ant-pagination-item,.ant-pagination-prev,.ant-pagination-next{
+    &:hover{
+      border-color: $defult-color;
+    }
+    a{
+      &:hover{
+        color: $defult-color;
+      }
+    }
+  }
+  .ant-pagination-item-active{
+      border-color: $defult-color;
+      a{
+        color: $defult-color;
+      }
+  }
+}
