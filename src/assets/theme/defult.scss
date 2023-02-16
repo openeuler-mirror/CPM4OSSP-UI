@@ -76,3 +76,30 @@ $dark-color: #1A3142;
     }
   }
 }
+
+.ant-tag{
+  &.info{
+    background-color: #fff;
+    border-color: $light-border-color;
+  }
+  &.success{
+    background-color: $success-color;
+    border-color: $success-color;
+    color: #fff;
+  }
+  &.danger{
+    background-color: $danger-color;
+    border-color: $success-color;
+    color: #fff;
+  }
+  &.warning{
+    background-color: $warning-color;
+    border-color: $warning-color;
+    color: #fff;
+  }
+  &.dark {
+    background-color: $dark-color;
+    border-color: $dark-color;
+    color: #fff;
+  }
+}
