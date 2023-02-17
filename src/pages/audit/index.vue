@@ -144,6 +144,25 @@ export default {
     calendarChange(val) {
       this.dates = val
     },
+    disabledDate(current) {
+      if (this.dates.length === 0) return false
+      const disabledDate = this.dates[0] && Math.abs(dayjs(current).diff(this.dates[0], 'day')) > 30
+      return disabledDate
+    },
+    computedTime(key = 3) {
+      // 一天的时间戳
+      const oneTimestamp = 24 * 60 * 60 * 1000
+      // 现在的时间
+      let nowTimestamp = new Date()
+      // 开始时间
+      let startTime = parseTime(nowTimestamp - oneTimestamp * key)
+      // 结束时间
+      let endTime = parseTime(nowTimestamp)
+      this.timeRange = [startTime, endTime]
+      this.isActive = key
+      this.open = false
+      this.getAuditList()
+    },
     getAuditList() {
       this.loading = true
       const param = {
