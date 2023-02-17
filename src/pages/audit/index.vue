@@ -60,3 +60,106 @@
     </a-table>
   </div>
 </template>
+
+<script>
+import dayjs from 'dayjs'
+import { getAuditList } from '@/api/audit'
+import { parseTime } from '@/utils/time'
+import detail from './components/index.vue'
+export default {
+  components: {
+    detail
+  },
+  data() {
+    return {
+      loading: false,
+      levelList: [
+        { label: '信息', value: 0 },
+        { label: '调试', value: 1 },
+        { label: '错误', value: 2 },
+        { label: '告警', value: 3 }
+
+      ],
+      total: 0,
+      auditList: [],
+      listQuery: {
+        page: 1,
+        limit: 10
+      },
+      timeRange: [],
+      tableHeight: 0,
+      rowData: {},
+      detailVisible: false,
+      columns: [
+        { title: 'IP', dataIndex: 'ip', width: 200, ellipsis: true },
+        { title: '日志级别', dataIndex: 'level', width: 100, ellipsis: true, scopedSlots: { customRender: 'level' }},
+        { title: '时间', dataIndex: 'time', width: 200, ellipsis: true, customRender: (text) => { return parseTime(text) } },
+        { title: '内容', dataIndex: 'content', ellipsis: true, scopedSlots: { customRender: 'content' }},
+        { title: '操作', dataIndex: 'operation', scopedSlots: { customRender: 'operation' }, width: 100, align: 'center' }
+      ],
+      isActive: 0,
+      open: false,
+      dates: [],
+      timer: null
+    }
+  },
+  computed: {
+    pagination() {
+      return {
+        total: this.total,
+        current: this.listQuery.page || 1,
+        pageSize: this.listQuery.limit || 10,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        showSizeChanger: true,
+        showTotal: (total) => {
+          return `共 ${total} 条`
+        }
+      }
+    }
+  },
+  watch: {
+    open(val) {
+      if (val) {
+        this.dates = []
+      }
+    }
+  },
+  created() {
+    this.computedTime()
+    this.getAuditList()
+  },
+  mounted() {
+    setTimeout(() => {
+      this.tableHeight = this.$refs.audit.clientHeight - 140
+    })
+  },
+  methods: {
+    getAuditList() {
+      this.loading = true
+      const param = {
+        page: this.listQuery.page,
+        limit: this.listQuery.limit,
+        ip: this.listQuery.ip || '',
+        type: 0,
+        level: this.listQuery.level === undefined ? -1 : this.listQuery.level,
+        startTime: this.timeRange[0] || '',
+        endTime: this.timeRange[1] || '',
+        content: '',
+        extra: ''
+      }
+      getAuditList(param).then(res => {
+        if (res.code === 200) {
+          res.data.count && (this.total = res.data.count)
+          this.auditList = res.data.log
+        } else {
+          this.total = 0
+        }
+      }).catch(() => {
+        this.total = 0
+      }).finally(() => {
+        this.loading = false
+      })
+    }
+  }
+}
+</script>
