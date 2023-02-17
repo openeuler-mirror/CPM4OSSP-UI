@@ -212,3 +212,31 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.audit{
+  height: 100%;
+}
+.filter {
+  margin-bottom: 10px;
+}
+.ant-btn {
+  margin-right: 10px;
+}
+.filter-item {
+  width: 150px;
+  margin-right: 10px;
+}
+::v-deep .ant-table-wrapper{
+  height: 100%;
+  .ant-spin-nested-loading{
+    height: 100%;
+    .ant-spin-container{
+      height: 100%;
+      .ant-table{
+        height: calc(100% - 130px);
+      }
+    }
+  }
+}
+</style>
