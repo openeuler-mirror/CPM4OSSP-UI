@@ -134,6 +134,16 @@ export default {
     })
   },
   methods: {
+    changeIP() {
+      if (this.timer != null) {
+        clearTimeout(this.timer)
+        this.timer = null
+      }
+      this.timer = setTimeout(this.handleFilter, 500)
+    },
+    calendarChange(val) {
+      this.dates = val
+    },
     getAuditList() {
       this.loading = true
       const param = {
