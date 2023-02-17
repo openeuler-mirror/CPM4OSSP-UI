@@ -150,18 +150,38 @@ export default {
       return disabledDate
     },
     computedTime(key = 3) {
-      // 一天的时间戳
       const oneTimestamp = 24 * 60 * 60 * 1000
-      // 现在的时间
       let nowTimestamp = new Date()
-      // 开始时间
       let startTime = parseTime(nowTimestamp - oneTimestamp * key)
-      // 结束时间
       let endTime = parseTime(nowTimestamp)
       this.timeRange = [startTime, endTime]
       this.isActive = key
       this.open = false
       this.getAuditList()
+    },
+    change(pagination) {
+      this.listQuery.page = pagination.current
+      this.listQuery.limit = pagination.pageSize
+      this.getAuditList()
+    },
+    onchangeTime(value, dateString) {
+      this.timeRange = dateString
+      if (dateString[0] === '' && dateString[1] === '') this.handleFilter()
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.getAuditList()
+    },
+    resetHandler() {
+      this.listQuery = {
+        page: 1,
+        limit: 10
+      }
+      this.computedTime()
+    },
+    handleDetail(record) {
+      this.detailVisible = true
+      this.rowData = Object.assign(record)
     },
     getAuditList() {
       this.loading = true
