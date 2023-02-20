@@ -106,11 +106,29 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <a-modal
+      v-model="nodeSelectVisible"
+      v-waiting="{ value: confirmLoading, text: '软件源配置下发中...' }"
+      width="650px"
+      title="节点选择"
+      :destroy-on-close="true"
+      :mask-closable="false"
+      :confirm-loading="confirmLoading"
+      @ok="handleSetPlan"
+    >
+      <a-spin :spinning="loading" tip="配置中...">
+        <node-select ref="nodeSelect" :plan-info="selectPlan" />
+      </a-spin>
+      <template slot="" />
+    </a-modal>
   </div>
 </template>
 
 <script>
+import NodeSelect from './node-select.vue'
 export default {
-
+  components: {
+    NodeSelect
+  },
 }
 </script>
