@@ -33,5 +33,52 @@
         </a-tooltip>
       </template>
     </a-table>
+    <a-modal v-model="detailVisible" title="软件源模板详情" width="850px" :footer="null">
+      <a-form-model
+        v-model="selectPlan"
+        :label-col="{span: 4}"
+        :wrapper-col="{ span: 20 }"
+      >
+        <a-form-model-item label="模板名">
+          <a-input v-model="selectPlan.planName" width="150px" disabled />
+        </a-form-model-item>
+        <a-form-model-item label="注释">
+          <a-input v-model="selectPlan.annotation" width="150px" disabled />
+        </a-form-model-item>
+        <a-form-model-item label="软件源列表详情">
+          <a-table
+            :columns="Sourcecolumns"
+            :data-source="selectPlan.sourceList"
+            bordered
+            :row-key="(record, index) => index"
+            :pagination="false"
+            min-height="400px"
+            max-height="400px"
+            :scroll="{ y: 480 }"
+          >
+            <a-tooltip slot="type" slot-scope="text" :title="text" placement="topLeft">
+              <span>{{ text }}</span>
+            </a-tooltip>
+            <a-tooltip slot="url" slot-scope="text" :title="text" placement="topLeft">
+              <span>{{ text }}</span>
+            </a-tooltip>
+            <a-tooltip slot="codename" slot-scope="text" :title="text" placement="topLeft">
+              <span>{{ text }}</span>
+            </a-tooltip>
+            <a-tooltip slot="remarks" slot-scope="text" placement="topLeft" :overlay-style="{'max-width':'200px'}">
+              <template slot="title"><span v-html="text.replaceAll(' ','<br/>')" /></template>
+              <span>{{ text }}</span>
+            </a-tooltip>
+          </a-table>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
+
   </div>
 </template>
+
+<script>
+export default {
+
+}
+</script>
