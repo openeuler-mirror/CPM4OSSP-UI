@@ -74,6 +74,38 @@
       </a-form-model>
     </a-modal>
 
+    <a-modal
+      v-model="editVisible"
+      v-waiting="{ value: confirmLoading, text: addTitle }"
+      :title="title"
+      :confirm-loading="confirmLoading"
+      :mask-closable="false"
+      :destroy-on-close="true"
+      width="850px"
+      @ok="handleSubmit"
+    >
+      <a-form-model
+        ref="planForm"
+        :model="formData"
+        :wrapper-col="{ span: 22 }"
+        :label-col="{ span: 2 }"
+        :rules="rules"
+      >
+        <a-form-model-item label="模板名" prop="planName">
+          <a-input v-model="formData.planName" placeholder="请填写软件源模板名称" />
+        </a-form-model-item>
+        <a-form-model-item label="注释" prop="annotation">
+          <a-input v-model="formData.annotation" placeholder="请填写注释信息" />
+        </a-form-model-item>
+        <a-form-model-item :wrapper-col="{span: 22,offset: 2}">
+          <source-setting
+            ref="sourceSetting"
+            :is-show-mode="false"
+            :edit-source-list="selectPlan.sourceList"
+          />
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
