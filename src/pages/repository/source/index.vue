@@ -169,6 +169,21 @@ export default {
         default:callback()
       }
     }
+    return{
+      planList: [],
+      sourceList: [],
+      columns: [
+        { title: '软件源模板名称', dataIndex: 'planName', ellipsis: true, scopedSlots: { customRender: 'planName' }},
+        { title: '注释', dataIndex: 'annotation', ellipsis: true, scopedSlots: { customRender: 'annotation' }},
+        { title: '操作', width: '250px', scopedSlots: { customRender: 'option' }, align: 'center' }
+      ],
+      Sourcecolumns: [
+        { title: '软件源类型', dataIndex: 'type', ellipsis: true, scopedSlots: { customRender: 'type' }},
+        { title: '软件源地址', dataIndex: 'url', ellipsis: true, scopedSlots: { customRender: 'url' }},
+        { title: '版本代码', dataIndex: 'codename', ellipsis: true, scopedSlots: { customRender: 'codename' }},
+        { title: '其它信息', dataIndex: 'remarks', ellipsis: true, scopedSlots: { customRender: 'remarks' }}
+      ],   
+    }
   }
 }
 </script>
