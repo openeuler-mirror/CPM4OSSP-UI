@@ -236,6 +236,117 @@ export default {
         this.loading = false
       })
     },
+    addSource() {
+      this.editVisible = true
+      this.operateType = 'add'
+      this.formData.planName = ''
+      this.formData.annotation = ''
+      this.selectPlan.sourceList = []
+      this.title = '新增软件源模板'
+    },
+    handleSubmit() {
+      this.$refs['planForm'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        if (this.$refs.sourceSetting.fileText.length === 0) {
+          this.$notification.error({ message: '新增模板的软件源列表为空' })
+          return
+        }
+        this.$refs['sourceSetting'].handleSet().then(() => {
+          const params = {
+            ...this.formData,
+            sourceList: this.$refs.sourceSetting.fileText
+          }
+          this.confirmLoading = true
+          if (this.operateType === 'add') {
+            this.addTitle = '新增软件源模板中...'
+            insertSource(params).then(res => {
+              if (res.code === 200) {
+                this.$notification.success({ message: '新增软件源模板成功' })
+                // 调用指定软件源获取软件包总数
+                this.addTitle = '更新源模板的软件包中...'
+                getSourcePackageByPlan({ planName: this.formData.planName }).then((res) => {
+                  if (res.code === 200) {
+                    this.$notification.success({ message: '更新源模板的软件包成功' })
+                  }
+                }).finally(() => {
+                  this.editVisible = false
+                  this.confirmLoading = false
+                })
+                this.formData.planName = ''
+                this.formData.annotation = ''
+                this.getPlanList()
+              } else {
+                this.confirmLoading = false
+              }
+            }).catch(() => {
+              this.confirmLoading = false
+            })
+            return
+          }
+          params.id = this.planId
+          this.addTitle = '编辑软件源模板中...'
+          updateSourcePlan(params).then(res => {
+            if (res.code === 200) {
+              this.$notification.success({ message: '编辑软件源模板成功' })
+              // 调用指定软件源获取软件包总数
+              this.addTitle = '更新源模板的软件包中...'
+              getSourcePackageByPlan({ planName: this.formData.planName }).then((res) => {
+                if (res.code === 200) {
+                  this.$notification.success({ message: '更新源模板的软件包成功' })
+                }
+              }).finally(() => {
+                this.editVisible = false
+                this.confirmLoading = false
+              })
+              this.formData.planName = ''
+              this.formData.annotation = ''
+              this.getPlanList()
+            } else {
+              this.confirmLoading = false
+            }
+          }).catch(() => {
+            this.confirmLoading = false
+          })
+        })
+      })
+    },
+    analysisData(data) {
+      return data.split('\n').map(item => {
+        let obj = {}
+        let urlPre = true // 该标记是否循环到http://或ssh://或ftp://
+        const reg = /^(http|ssh|ftp):\/\//
+        item.split(' ').forEach((item, index) => {
+          if (item) {
+            if (reg.test(item)) {
+              obj[this.keyValueMap[1]] = item
+              urlPre = false
+            } else {
+              if (urlPre) {
+                obj[this.keyValueMap[0]] = obj[this.keyValueMap[0]] ? obj[this.keyValueMap[0]] + ' ' + item : item
+              } else {
+                if (!obj[this.keyValueMap[2]]) {
+                  obj[this.keyValueMap[2]] = item
+                } else {
+                  obj[this.keyValueMap[3]] = obj[this.keyValueMap[3]] ? obj[this.keyValueMap[3]] + ' ' + item : item
+                }
+              }
+            }
+          }
+        })
+        return obj
+      })
+    },
+    editSource(row) {
+      this.title = '编辑软件源模板'
+      this.planId = row.id
+      this.operateType = 'edit'
+      this.formData.planName = row.planName
+      this.formData.annotation = row.annotation
+      this.selectPlan.sourceList = this.analysisData(row.sourceList)
+      this.editVisible = true
+    },
   }
 }
 </script>
