@@ -361,6 +361,12 @@ export default {
         }
       })
     },
+    SourceDetail(row) {
+      this.detailVisible = true
+      this.selectPlan.planName = row.planName
+      this.selectPlan.annotation = row.annotation
+      this.selectPlan.sourceList = this.analysisData(row.sourceList)
+    },
   }
 }
 </script>
