@@ -438,3 +438,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.ant-btn {
+  margin-right: 15px;
+}
+</style>
