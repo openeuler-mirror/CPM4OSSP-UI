@@ -146,5 +146,29 @@ export default {
     SourceSetting,
     ResultList
   },
+  data() {
+    const validator = (rule, value, callback) => {
+      const val = value.trim()
+      switch (rule.field) {
+        case 'planName':
+          if (val.length === 0) {
+            new Error(callback('请输入模板名称'))
+          } else if (val.length > 10) {
+            new Error(callback('模板名称长度不能超过10位'))
+          } else {
+            callback()
+          }
+          break
+        case 'annotation':
+          if (val.length > 50) {
+            new Error(callback('注释长度不能超过50位'))
+          } else {
+            callback()
+          }
+          break
+        default:callback()
+      }
+    }
+  }
 }
 </script>
