@@ -39,5 +39,20 @@ export default {
   created() {
     this.getNodeList()
   },
+  methods: {
+    getNodeList() {
+      getNodeList().then(res => {
+        if (res.code === 200) {
+          res.data.forEach(item => {
+            getNodeStatus(item.id).then(statusRes => {
+              if (statusRes.code === 200) {
+                this.nodeList.push(item)
+              }
+            })
+          })
+        }
+      })
+    },
+  }
 }
 </script>
