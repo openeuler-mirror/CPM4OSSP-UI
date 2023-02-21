@@ -121,14 +121,30 @@
       </a-spin>
       <template slot="" />
     </a-modal>
+    <a-modal
+      v-model="resultListVisible"
+      width="800px"
+      :title="resultTitle"
+      :destroy-on-close="true"
+      :mask-closable="false"
+      cancel-text="关闭"
+      :ok-text="okText"
+      @ok="handleResultOk"
+    >
+      <result-list ref="resultList" :data-list="resultList" />
+    </a-modal>
   </div>
 </template>
 
 <script>
 import NodeSelect from './node-select.vue'
+import SourceSetting from '@/pages/node/node-layout/source/source_setting.vue'
+import ResultList from './result-list.vue'
 export default {
   components: {
-    NodeSelect
+    NodeSelect,
+    SourceSetting,
+    ResultList
   },
 }
 </script>
