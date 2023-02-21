@@ -315,7 +315,7 @@ export default {
     analysisData(data) {
       return data.split('\n').map(item => {
         let obj = {}
-        let urlPre = true // 该标记是否循环到http://或ssh://或ftp://
+        let urlPre = true
         const reg = /^(http|ssh|ftp):\/\//
         item.split(' ').forEach((item, index) => {
           if (item) {
@@ -346,6 +346,20 @@ export default {
       this.formData.annotation = row.annotation
       this.selectPlan.sourceList = this.analysisData(row.sourceList)
       this.editVisible = true
+    },
+    deleteSource(id) {
+      this.$confirm({
+        title: '系统提示',
+        content: '确定删除该条软件源模板?',
+        onOk: () => {
+          deleteSource({ id }).then(res => {
+            if (res.code === 200) {
+              this.$notification.success({ message: '删除成功' })
+              this.getPlanList()
+            }
+          })
+        }
+      })
     },
   }
 }
