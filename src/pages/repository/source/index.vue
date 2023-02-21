@@ -170,6 +170,15 @@ export default {
       }
     }
     return{
+      addTitle: '',
+      loading: false,
+      confirmLoading: false,
+      keyValueMap: {
+        '0': 'type',
+        '1': 'url',
+        '2': 'codename',
+        '3': 'remarks'
+      },
       planList: [],
       sourceList: [],
       columns: [
@@ -182,7 +191,35 @@ export default {
         { title: '软件源地址', dataIndex: 'url', ellipsis: true, scopedSlots: { customRender: 'url' }},
         { title: '版本代码', dataIndex: 'codename', ellipsis: true, scopedSlots: { customRender: 'codename' }},
         { title: '其它信息', dataIndex: 'remarks', ellipsis: true, scopedSlots: { customRender: 'remarks' }}
-      ],   
+      ],
+      detailVisible: false,
+      editVisible: false,
+      formData: {
+        planName: '',
+        annotation: ''
+      },
+      rules: {
+        planName: [
+          { required: true, message: '请输入模板名称', trigger: 'blur' },
+          { validator, trigger: ['blur', 'change'] }
+        ],
+        annotation: [{ validator, trigger: ['blur', 'change'] }]
+      },
+      title: '新增软件源模板',
+      selectPlan: {
+        planName: '',
+        sourceList: []
+      },
+      operateType: 'add',
+      planId: null,
+      nodeSelectVisible: false,
+      resultList: [],
+      resultListVisible: false,
+      resultTitle: '',
+      // 当前操作标识符(配置、回滚)
+      step: '',
+      rollbackList: [],
+      okText: '确定'   
     }
   }
 }
