@@ -137,6 +137,7 @@
 </template>
 
 <script>
+import { getPlanSourceList, deleteSource, insertSource, updateSourcePlan, batchProcessing, getSourcePackageByPlan } from '@/api/repository'
 import NodeSelect from './node-select.vue'
 import SourceSetting from '@/pages/node/node-layout/source/source_setting.vue'
 import ResultList from './result-list.vue'
@@ -221,6 +222,20 @@ export default {
       rollbackList: [],
       okText: '确定'   
     }
+  },
+  created() {
+    this.getPlanList()
+  },
+  methods: {
+    getPlanList() {
+      this.loading = true
+      this.planList = []
+      getPlanSourceList().then(res => {
+        this.planList = res.data
+      }).finally(() => {
+        this.loading = false
+      })
+    },
   }
 }
 </script>
