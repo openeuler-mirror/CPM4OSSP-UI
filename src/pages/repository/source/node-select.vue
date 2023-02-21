@@ -53,6 +53,40 @@ export default {
         }
       })
     },
+    handleSubmit() {
+      return new Promise((resolve, reject) => {
+        if (this.selecPlanName.length === 0) {
+          this.$notification.error({ message: '请选择配置节点' })
+          reject('validate')
+          return
+        }
+        let fileStr = ''
+        this.planInfo.sourceList.forEach((item, index) => {
+          if (index > 0) {
+            fileStr += '\n' + item.type + ' ' + item.url + ' ' + item.codename + ' ' + item.remarks
+          } else {
+            fileStr += item.type + ' ' + item.url + ' ' + item.codename + ' ' + item.remarks
+          }
+        })
+        let pramars = {
+          nodeIds: this.selecPlanName,
+          interface: 'SetSourceList',
+          data: {
+            mode: 'cover',
+            file: fileStr
+          }
+        }
+        batchProcessing(pramars).then(res => {
+          let flag = res.some(item => {
+            return item.code !== 200
+          })
+          flag && reject(res)
+          !flag && resolve(res)
+        }).catch(() => {
+          reject('validate')
+        })
+      })
+    }
   }
 }
 </script>
