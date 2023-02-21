@@ -367,6 +367,74 @@ export default {
       this.selectPlan.annotation = row.annotation
       this.selectPlan.sourceList = this.analysisData(row.sourceList)
     },
+    batchSet(row) {
+      this.selectPlan.planName = row.planName
+      this.selectPlan.sourceList = this.analysisData(row.sourceList)
+      this.nodeSelectVisible = true
+    },
+    handleSetPlan() {
+      this.confirmLoading = true
+      this.$refs.nodeSelect.handleSubmit().then(() => {
+        this.$notification.success({ message: '配置软件源成功' })
+        this.nodeSelectVisible = false
+      }).catch((err) => {
+        if (err === 'validate') return
+        this.resultList = err
+        this.resultTitle = '节点软件源配置结果'
+        this.step = '配置'
+        this.okText = '回滚'
+        this.resultListVisible = true
+      }).finally(() => {
+        this.confirmLoading = false
+      })
+    },
+    handleResultOk() {
+      this.rollbackList = this.$refs.resultList.selecList
+      if (this.step === '配置' && this.rollbackList.length > 0) {
+        let list = []
+        this.rollbackList.forEach(item => {
+          list.push(item.nodeId)
+        })
+        this.$confirm({
+          title: '系统提示',
+          content: '确定回滚所选节点的软件源配置?',
+          okText: '确定',
+          cancelText: '取消',
+          keyboard: false,
+          onOk: () => {
+            const params = {
+              nodeIds: list,
+              data: '',
+              interface: 'RollbackSourceList'
+            }
+            batchProcessing(params).then(res => {
+              this.resultList = res
+              this.resultListVisible = true
+              this.nodeSelectVisible = false
+              this.okText = '确定'
+              this.step = '回滚'
+              this.resultTitle = '节点软件源回滚结果'
+              for (let item of res) {
+                if (item.code === 200) {
+                  this.$notification.success({ message: item.msg })
+                } else {
+                  this.$notification.error({ message: item.msg })
+                }
+              }
+            }).catch((error) => {
+              this.$notification.error({ message: error || '软件源回滚失败' })
+            })
+          },
+          onCancel: () => {
+            this.nodeSelectVisible = false
+          }
+        })
+      } else if (this.step === '配置' && this.rollbackList.length === 0) {
+        this.$notification.error({ message: '请选择需要回滚的节点' })
+      } else {
+        this.resultListVisible = false
+      }
+    }
   }
 }
 </script>
