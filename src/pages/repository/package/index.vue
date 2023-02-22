@@ -57,6 +57,28 @@
         </a-tooltip>
       </template>
     </a-table>
+    <a-modal
+      v-model="editVisible"
+      :title="(isBatchEdit?'批量':'')+'修改软件包类别'"
+      :destroy-on-close="true"
+      width="700px"
+      @ok="handleEditClass"
+    >
+      <a-form-model :wrapper-col="{ span: 20 }" :label-col="{ span: 4 }">
+        <a-form-model-item v-if="!isBatchEdit" label="软件包名">
+          <a-input v-model="selectRow.package" :disabled="true" />
+        </a-form-model-item>
+        <a-form-model-item label="类别">
+          <a-select v-model="pkgClass" placeholder="请选择软件包类别">
+            <a-select-option
+              v-for="item in selectClassList"
+              :key="item.value"
+              :disabled="!isBatchEdit&&item.value === selectRow.classification"
+            >{{ item.label }}</a-select-option>
+          </a-select>
+        </a-form-model-item>
+      </a-form-model>
+    </a-modal>
   </div>
 </template>
 
