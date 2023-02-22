@@ -184,6 +184,16 @@ export default {
       this.classification = 'all'
       this.getPackageByPage()
     },
+    changeClassification() {
+      this.listQuery.page = 1
+      this.listQuery.limit = 10
+      this.getPackageByPage()
+    },
+    changePackage() {
+      if (this.packageName === '') {
+        this.changeClassification()
+      }
+    },
     getPackageByPage() {
       const params = {
         page: this.listQuery.page,
