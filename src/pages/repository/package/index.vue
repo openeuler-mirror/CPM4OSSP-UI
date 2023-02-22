@@ -59,3 +59,21 @@
     </a-table>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      tableHeight: 0,
+      columns: [
+        { title: '软件包名', dataIndex: 'package', ellipsis: true, scopedSlots: { customRender: 'package' }},
+        { title: '软件包版本', dataIndex: 'version', ellipsis: true, width: 200, scopedSlots: { customRender: 'version' }},
+        { title: '体系架构', dataIndex: 'architecture', ellipsis: true, width: 150, scopedSlots: { customRender: 'architecture' }},
+        { title: '软件包类别', dataIndex: 'classification', ellipsis: true, width: 150, scopedSlots: { customRender: 'classification' }},
+        { title: '操作', width: 100, scopedSlots: { customRender: 'option' }, align: 'center' }
+      ],
+      planList: [],
+    }
+  }
+}
+</script>
