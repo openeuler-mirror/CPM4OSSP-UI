@@ -183,7 +183,25 @@ export default {
       this.listQuery.limit = 10
       this.classification = 'all'
       this.getPackageByPage()
-    }
+    },
+    getPackageByPage() {
+      const params = {
+        page: this.listQuery.page,
+        limit: this.listQuery.limit,
+        pkgClass: this.classification,
+        modelName: this.planName,
+        packageName: this.packageName
+      }
+      this.loading = true
+      getSourcePackagePage(params).then(res => {
+        if (res.code === 200) {
+          this.total = Number(res.data?.total) || 0
+          this.packageList = res.data?.list || []
+        }
+      }).finally(() => {
+        this.loading = false
+      })
+    },
   }
 }
 </script>
