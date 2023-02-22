@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import { getPlanSourceList, getSourcePackagePage, insertUserPkgPlan } from '@/api/repository'
 export default {
   data() {
     return {
@@ -124,6 +125,35 @@ export default {
       selectedRows: [],
       isBatchEdit: true
     }
-  }
+  },
+  computed: {
+    rowSelection() {
+      return {
+        selectedRowKeys: this.selectedRowKeys,
+        onChange: (selectedRowKeys, selectedRows) => {
+          this.selectedRowKeys = selectedRowKeys
+          this.selectedRows = selectedRows
+        },
+        getCheckboxProps: record => ({
+          props: {
+            disabled: record.classification === 'necessary'
+          }
+        })
+      }
+    },
+    pagination() {
+      return {
+        total: this.total,
+        current: this.listQuery.page || 1,
+        pageSize: this.listQuery.limit || 10,
+        pageSizeOptions: ['10', '20', '30', '50'],
+        showSizeChanger: true,
+        showTotal: (total) => {
+          return `共 ${total} 条`
+        },
+        showSizeChange: this.onShowSizeChange
+      }
+    }
+  },
 }
 </script>
