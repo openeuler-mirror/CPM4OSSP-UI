@@ -155,6 +155,9 @@ export default {
       }
     }
   },
+  created() {
+    this.initData()
+  },
   mounted() {
     setTimeout(() => {
       this.tableHeight = this.$refs.package.clientHeight - 140
@@ -166,6 +169,21 @@ export default {
         this.planList = res.data
       })
     },
+    initData() {
+      getPlanSourceList().then(res => {
+        this.planList = res.data || []
+        if (this.planList.length > 0) {
+          this.planName = this.planList[0].planName
+          this.getPackageByPage()
+        }
+      })
+    },
+    freshenList() {
+      this.listQuery.page = 1
+      this.listQuery.limit = 10
+      this.classification = 'all'
+      this.getPackageByPage()
+    }
   }
 }
 </script>
