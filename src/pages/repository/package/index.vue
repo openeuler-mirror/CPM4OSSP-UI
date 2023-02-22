@@ -155,5 +155,17 @@ export default {
       }
     }
   },
+  mounted() {
+    setTimeout(() => {
+      this.tableHeight = this.$refs.package.clientHeight - 140
+    })
+  },
+  methods: {
+    getPlanList() {
+      getPlanSourceList().then(res => {
+        this.planList = res.data
+      })
+    },
+  }
 }
 </script>
