@@ -1,4 +1,4 @@
-import axios from './config'
+import axios from '@/utils/request'
 
 export function getNodeList(params) {
   return axios({
