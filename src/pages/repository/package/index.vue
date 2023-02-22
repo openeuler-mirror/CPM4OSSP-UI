@@ -73,6 +73,34 @@ export default {
         { title: '操作', width: 100, scopedSlots: { customRender: 'option' }, align: 'center' }
       ],
       planList: [],
+      planName: null,
+      packageName: '',
+      packageList: [],
+      listQuery: {
+        page: 1,
+        limit: 10
+      },
+      total: 0,
+      loading: false,
+      rowKeys: [],
+      selectList: [],
+      editVisible: false,
+      classification: 'all',
+      classificationList: [
+        { label: '全部', value: 'all' },
+        { label: '必要', value: 'necessary' },
+        { label: '重要', value: 'important' },
+        { label: '普通', value: 'normal' }
+      ],
+      selectClassList: [
+        { label: '重要', value: 'important' },
+        { label: '普通', value: 'normal' }
+      ],
+      selectRow: {},
+      pkgClass: '',
+      selectedRowKeys: [],
+      selectedRows: [],
+      isBatchEdit: true
     }
   }
 }
