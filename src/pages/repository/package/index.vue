@@ -212,6 +212,11 @@ export default {
         this.loading = false
       })
     },
+    onShowSizeChange(pagination) {
+      this.listQuery.page = pagination.current
+      this.listQuery.limit = pagination.pageSize
+      this.getPackageByPage()
+    },
   }
 }
 </script>
