@@ -33,4 +33,56 @@ body[data-theme='red'] {
     color: $linx-red-warning-color;
     font-size: 12px;
   }
+
+.ant-btn {
+    &:active{
+      color: $linx-red-theme;
+      border-color: $linx-red-theme;
+    }
+    border-radius: 20px;
+    &:hover{
+      border-color: $linx-red-theme;
+      color: $linx-red-theme;
+    }
+    &[disabled] {
+      background-color: #f5f5f5 !important;
+      border-color: #d9d9d9 !important;
+      &:hover{
+        color:rgba(0, 0, 0, 0.25)!important;
+      }
+    }
+    &.ant-btn-primary{
+      background-color: $linx-red-theme;
+      border-color: $linx-red-theme;
+      &:hover{
+        color: #fff;
+      }
+    }
+    &.ant-btn-danger{
+      background-color: $linx-red-danger-color;
+      border-color: $linx-red-danger-color;
+      &:hover{
+        color: #fff;
+      }
+    }
+    &.ant-btn-link{
+      &[disabled] {
+        background-color: transparent !important;
+        border-color: transparent !important;
+        &:hover{
+          span{
+            color: $linx-red-dark-color !important;
+          }
+        }
+      }
+      color: $linx-red-dark-color;
+      &:hover{
+        border-color: transparent;
+        span{
+          color: $linx-red-theme;
+        }
+      }
+    }
+  } 
+
 }
