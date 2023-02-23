@@ -196,5 +196,37 @@ body[data-theme='red'] {
         }
     }
   }
+  .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+    background-color: $linx-red-theme-rgb1;
+  }
+  .ant-table{
+    .ant-table-content{
+      thead{
+        tr{
+          th{
+            background-color: $linx-red-theme-rgb !important;
+          }
+        }
+      }
+        tbody{
+          tr{
+            td:last-child{
+              .ant-btn.ant-btn-link{
+                margin-right: 0;
+                &[disabled]{
+                  i{
+                    color: $linx-red-gray-color;
+                  }
+                }
+              }
+              i{
+                font-size: 18px;
+                color: $linx-red-info-color;
+              }
+            }
+          }
+        }
+    }
+  }
 
 }
