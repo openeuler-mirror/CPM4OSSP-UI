@@ -267,3 +267,24 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+  .package{
+    height: 100%;
+  }
+  ::v-deep.ant-pagination{
+    margin-top: 15px;
+  }
+  ::v-deep .ant-table-wrapper{
+  height: 100%;
+  .ant-spin-nested-loading{
+    height: 100%;
+    .ant-spin-container{
+      height: 100%;
+      .ant-table{
+        height: calc(100% - 130px);
+      }
+    }
+  }
+}
+</style>
