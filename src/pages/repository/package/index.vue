@@ -217,6 +217,14 @@ export default {
       this.listQuery.limit = pagination.pageSize
       this.getPackageByPage()
     },
+    onSelectChange(rows, select) {
+      this.rowKeys = rows
+      this.selectList = select
+    },
+    batchEditPakClass() {
+      this.isBatchEdit = true
+      this.editVisible = true
+    },
   }
 }
 </script>
