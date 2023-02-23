@@ -9,3 +9,28 @@ $linx-red-light-border-color: #DCE0E2;
 $linx-red-dark-color: #1A3142;
 $linx-red-gray-color:#909399;
 $linx-red-theme-rgb1: rgba($color: $linx-red-theme, $alpha: 0.05);
+
+body[data-theme='red'] {
+  .info{
+      color: $linx-red-info-color !important;
+    }
+  .warning{
+    color: $linx-red-warning-color !important;
+  }
+  .danger{
+    color: $linx-red-danger-color !important;
+  }
+  .success{
+    color: $linx-red-success-color !important;
+  }
+  .primary {
+    color: rgba($color: #1890ff, $alpha: 0.7) !important;
+  }
+  .gray {
+    color: $linx-red-gray-color;
+  }
+  .warning-small{
+    color: $linx-red-warning-color;
+    font-size: 12px;
+  }
+}
