@@ -102,5 +102,37 @@ body[data-theme='red'] {
       border: 1px solid $linx-red-theme;
     }
   }
+
+.ant-tag{
+    &.info{
+      background-color: #fff !important;
+      border-color: $linx-red-light-border-color;
+    }
+    &.success{
+      background-color: $linx-red-success-color;
+      border-color: $linx-red-success-color;
+      color: #fff !important;
+    }
+    &.danger{
+      background-color: $linx-red-danger-color;
+      border-color: $linx-red-danger-color;
+      color: #fff !important;
+    }
+    &.warning{
+      background-color: $linx-red-warning-color;
+      border-color: $linx-red-warning-color;
+      color: #fff !important;
+    }
+    &.gray {
+      background-color: $linx-red-gray-color;
+      border-color: $linx-red-gray-color;
+      color: #fff !important;
+    }
+    &.dark {
+      background-color: $linx-red-dark-color;
+      border-color: $linx-red-dark-color;
+      color: #fff !important;
+    }
+  }
   
 }
