@@ -170,5 +170,31 @@ body[data-theme='red'] {
       }
     }
   }
+  
+  .ant-table {
+    .ant-table-header {
+        thead {
+          tr {
+            th {
+              background: $linx-red-theme-rgb;
+              font-weight: bold;
+              border-right: 1px solid #dcdfe6;
+              &:hover {
+                background: $linx-red-theme-rgb;
+              }
+            }
+          }
+        }
+    }
+    .ant-table-body {
+        tbody {
+          tr {
+            th {
+              border-right: 1px solid #dcdfe6;
+            }
+          }
+        }
+    }
+  }
 
 }
