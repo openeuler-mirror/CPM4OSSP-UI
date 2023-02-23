@@ -231,7 +231,39 @@ export default {
       this.isBatchEdit = true
       this.editVisible = true
     },
-
+    handleEditClass() {
+      if (this.pkgClass === '') {
+        this.$notification.error({ message: '请选择软件包类别' })
+        return
+      }
+      let changePkgIds = []
+      if (this.isBatchEdit) {
+        // 过滤不用改变的软件包类别
+        changePkgIds = this.selectedRows.filter(item => item.classification !== this.pkgClass).map(item => item.id)
+      } else {
+        changePkgIds.push(this.selectRow.id)
+      }
+      if (changePkgIds.length === 0) {
+        this.selectedRowKeys = []
+        this.selectedRows = []
+        this.editVisible = false
+        this.$notification.success({ message: '修改软件包类别成功' })
+        return
+      }
+      const params = {
+        pkgClass: this.pkgClass,
+        pkgIds: JSON.stringify(changePkgIds)
+      }
+      insertUserPkgPlan(params).then(res => {
+        if (res.code === 200) {
+          this.selectedRowKeys = []
+          this.selectedRows = []
+          this.changeClassification()
+          this.$notification.success({ message: '修改软件包类别成功' })
+          this.editVisible = false
+        }
+      })
+    }
   }
 }
 </script>
