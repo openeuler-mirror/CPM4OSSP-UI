@@ -221,10 +221,17 @@ export default {
       this.rowKeys = rows
       this.selectList = select
     },
+    editPakClass(row) {
+      this.pkgClass = ''
+      this.isBatchEdit = false
+      this.editVisible = true
+      this.selectRow = row
+    },
     batchEditPakClass() {
       this.isBatchEdit = true
       this.editVisible = true
     },
+
   }
 }
 </script>
