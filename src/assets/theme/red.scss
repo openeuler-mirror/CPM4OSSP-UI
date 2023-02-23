@@ -229,4 +229,35 @@ body[data-theme='red'] {
     }
   }
 
+  .ant-pagination{
+    .ant-pagination-item-link {
+      border-radius: 20px;
+      &:hover {
+        border-color: $linx-red-theme;
+      }
+    }
+    .ant-pagination-item,.ant-pagination-prev,.ant-pagination-next{
+      border-radius: 20px;
+      &:hover{
+        border-color: $linx-red-theme;
+      }
+      a{
+        &:hover{
+          color: $linx-red-theme;
+        }
+      }
+    }
+    .ant-pagination-item-active{
+        border-color: $linx-red-theme;
+        a{
+          color: $linx-red-theme;
+        }
+    }
+    .ant-select-selection {
+      border-radius: 20px;
+      &:hover{
+        border-color: $linx-red-theme;
+      }
+    }
+  }
 }
