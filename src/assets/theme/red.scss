@@ -413,5 +413,17 @@ body[data-theme='red'] {
     background: #ffffff;
   }
 
+.layout-content{
+  background: url('../assets/images/linx-red/login-bg-red.jpg') no-repeat;
+  .wrap{
+      background: rgba($color: #fff, $alpha: 0.8);
+      overflow-y: scroll;
+      box-shadow: 5px 3px 0px rgba($color: #777, $alpha: 1);
+      .filter{
+        border-color: $linx-red-theme;
+      }
+  }
+}
+
 
 }
