@@ -285,5 +285,33 @@ body[data-theme='red'] {
     }
   }
 
+  .ant-select-selection{
+    border-radius: 20px;
+  }
+  .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active{
+    border-color: $linx-red-theme !important;
+      box-shadow: none;
+  }
+  .ant-form-item-control{
+    .ant-select-selection {
+      border-radius: 20px !important;
+      &:hover {
+        border-color: $linx-red-theme;
+        box-shadow: 0 0 0 2px $linx-red-theme-rgb;
+      }
+    }
+    &.has-error{
+      .ant-input{
+        border-color: $linx-red-danger-color;
+        &:hover{
+          border-color: $linx-red-danger-color;
+        }
+        &:focus{
+          border-color: $linx-red-danger-color;
+        }
+      }
+    }
+  }
+
 
 }
