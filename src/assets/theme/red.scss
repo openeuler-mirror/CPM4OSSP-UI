@@ -313,5 +313,16 @@ body[data-theme='red'] {
     }
   }
 
+  .ant-switch{
+    &.ant-switch-checked{
+      background-color: $linx-red-theme;
+    }
+  }
+  .header-text{
+    &:hover{
+      color: $linx-red-theme;
+    }
+  }
+
 
 }
