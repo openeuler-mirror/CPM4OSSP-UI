@@ -375,5 +375,21 @@ body[data-theme='red'] {
         }
       }
     }
-
+    .ant-calendar-time-picker-select{
+      li{
+        &:hover{
+          background: $linx-red-theme-rgb;
+        }
+      }
+    }
+    .ant-btn{
+      &.isActive{
+        color: $linx-red-theme;
+        border-color: $linx-red-theme;
+      }
+    }
+  }
+  .ant-calendar-range .ant-calendar-in-range-cell::before{
+    background: $linx-red-theme-rgb;
+  }
 }
