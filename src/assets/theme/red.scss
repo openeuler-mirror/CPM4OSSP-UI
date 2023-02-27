@@ -425,5 +425,46 @@ body[data-theme='red'] {
   }
 }
 
+.app-header{
+.ant-tabs {
+  .ant-tabs-nav-wrap{
+    .ant-tabs-tab{
+        background: rgba($color: #fff, $alpha: 0);
+        color: #fff;
+        border-color: rgba($color: #fff, $alpha: 0.5);
+        i{
+          color: #fff;
+        }
+        i{
+          &:hover{
+              color: $linx-red-theme;
+          }
+        }
+      &:hover{
+        color: $linx-red-theme;
+        i{
+          color: $linx-red-theme;
+        }
+      }
+      &.ant-tabs-tab-active{
+        color: $linx-red-theme;
+        background: rgba($color: #fff, $alpha: 0.85);
+        i{
+          color: $linx-red-theme;
+        }
+      }
+    }
+  }
+}
+  background: url('../assets/images/linx-red/navbar-bg.png');
+  i{
+      color: #fff;
+  }
 
+.trigger{
+  &:hover{
+      color: $linx-red-theme;
+  }
+}
+}
 }
