@@ -492,4 +492,34 @@ body[data-theme='red'] {
     }
 }
 
+.ant-dropdown-menu{
+.ant-dropdown-menu-item{
+  &:hover{
+    background-color: $linx-red-theme-rgb;
+  }
+}
+}
+  @keyframes loading {
+    0%{
+      transform: scaleZ(0deg);
+    }
+    50%{
+      transform: scaleZ(180deg);
+    }
+    100%{
+      transform: rotateZ(360deg);
+    }
+  }
+  .ant-spin{
+    .ant-spin-dot-spin{
+      background: url('./images/logo_small.png') no-repeat;
+      background-size: cover;
+      animation: loading 1.5s;
+      animation-iteration-count: infinite;
+      i{
+        // display: none;
+        background: transparent;
+      }
+    }
+  }
 }
