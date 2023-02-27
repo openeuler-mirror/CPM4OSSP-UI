@@ -548,5 +548,45 @@ body[data-theme='red'] {
     border-color: $linx-red-theme;
   }
 
-
+.ant-tree-checkbox:hover .ant-tree-checkbox-inner{
+  border-color: $linx-red-theme;
+}
+  .ant-tree-checkbox-checked .ant-tree-checkbox-inner{
+    background-color: $linx-red-theme;
+    border-color: $linx-red-theme;
+    &:hover{
+      border-color: $linx-red-theme;
+    }
+  }
+  .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner{
+    &::after{
+      background-color: $linx-red-theme;
+    }
+  }
+  // element树形复选框
+  .el-tree{
+    .el-checkbox__input.is-checked .el-checkbox__inner,.el-checkbox__input.is-indeterminate .el-checkbox__inner{
+      background-color: $linx-red-theme;
+      border-color: $linx-red-theme;
+    }
+    .el-checkbox__input.is-focus .el-checkbox__inner{
+      border-color: $linx-red-theme;
+    }
+    .el-checkbox__inner{
+      width: 16px;
+      height: 16px;
+      &:hover{
+        border-color: $linx-red-theme;
+      }
+      &::before{
+        height: 4px;
+      }
+      &::after{
+        left: 5px;
+        top: 2px;
+        border-width: 2px;
+      }
+    }
+  }
+  
 }
