@@ -474,4 +474,22 @@ body[data-theme='red'] {
   }
 }
 }
+
+.login-wrapper{
+  background-image: url('./images/linx-red/login-bg-red.jpg');
+  .server-ip{
+      color: #fff;
+      &:hover{
+        color: $linx-red-theme;
+      }
+    }
+    .login-card{
+      background: rgba($color: #000, $alpha: 0.2);
+      box-shadow: 0px 0px 100px rgba($color: $linx-red-theme, $alpha: 0.1);
+    }
+    .btn-login{
+      background: rgba($color: $linx-red-theme, $alpha: 0.5);
+    }
+}
+
 }
