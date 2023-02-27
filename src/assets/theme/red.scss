@@ -522,4 +522,31 @@ body[data-theme='red'] {
       }
     }
   }
+
+.ant-checkbox:hover{
+  &.ant-checkbox-checked{
+    .ant-checkbox-inner{
+      border-color: $linx-red-theme;
+    }
+  }
+  .ant-checkbox-inner{
+    border-color: $linx-red-theme;
+  }
+}
+.ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after{
+  border-color: #ffffff;
+}
+.ant-checkbox-indeterminate .ant-checkbox-inner::after{
+  background-color: $linx-red-theme;
+}
+.ant-checkbox-checked:hover .ant-checkbox-inner,
+.ant-checkbox-indeterminate:hover .ant-checkbox-inner{
+  border-color: $linx-red-theme;
+}
+  .ant-checkbox-checked .ant-checkbox-inner{
+    background-color: $linx-red-theme;
+    border-color: $linx-red-theme;
+  }
+
+
 }
