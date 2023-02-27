@@ -460,7 +460,14 @@ body[data-theme='red'] {
   i{
       color: #fff;
   }
-
+  .user-header{
+      span{
+          color: #fff;
+          &:hover{
+              color: $linx-red-theme;
+          }
+      }
+  }
 .trigger{
   &:hover{
       color: $linx-red-theme;
