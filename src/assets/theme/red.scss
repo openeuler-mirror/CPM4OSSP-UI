@@ -610,4 +610,22 @@ body[data-theme='red'] {
   .ant-tabs-ink-bar{
     background-color: $linx-red-theme;
   }
+
+  .ant-modal{
+    .ant-modal-close{
+      i{
+        color: #ffffff;
+      }
+    }
+    .ant-modal-header{
+      background-color: $linx-red-theme;
+      border-bottom-color: $linx-red-theme;
+      .ant-modal-title{
+        color: #ffffff;
+      }
+    }
+    .ant-modal-footer {
+      border-top-color: $linx-red-theme;
+    }
+  }
 }
