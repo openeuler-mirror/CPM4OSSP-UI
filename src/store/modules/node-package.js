@@ -13,6 +13,19 @@ const nodePackage = {
       state.selectPackage = data
     }
   },
+  actions: {
+    getPackages({ commit }, params) {
+      return new Promise((reslove, reject) => {
+        getInstallablePackage(params).then(res => {
+          if (res.code === 200) {
+            commit('SET_PACKAGE_LIST', res.data || [])
+            reslove()
+          }
+          reject()
+        })
+      })
+    }
+  },
 }
 
 export default nodePackage
