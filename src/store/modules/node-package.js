@@ -26,6 +26,11 @@ const nodePackage = {
       })
     }
   },
+  getters: {
+    getInstallPackages(state) {
+      return state.installPackages
+    }
+  }
 }
 
 export default nodePackage
