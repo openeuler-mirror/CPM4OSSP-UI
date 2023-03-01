@@ -628,4 +628,17 @@ body[data-theme='red'] {
       border-top-color: $linx-red-theme;
     }
   }
+
+    .file-layout{
+      .filter{
+        border-color: $linx-red-theme;
+      }
+    }
+    .listSpot{
+      width: 10px;
+      height: 10px;
+      background: $linx-red-theme;
+      border-radius: 5px;
+      margin-top: 6px;
+    }
 }
