@@ -599,4 +599,15 @@ body[data-theme='red'] {
     }
   }
 
+  .ant-tabs-nav .ant-tabs-tab{
+    &.ant-tabs-tab-active{
+      color: $linx-red-theme;
+    }
+    &:hover{
+      color: $linx-red-theme;
+    }
+  }
+  .ant-tabs-ink-bar{
+    background-color: $linx-red-theme;
+  }
 }
