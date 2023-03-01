@@ -563,7 +563,6 @@ body[data-theme='red'] {
       background-color: $linx-red-theme;
     }
   }
-  // element树形复选框
   .el-tree{
     .el-checkbox__input.is-checked .el-checkbox__inner,.el-checkbox__input.is-indeterminate .el-checkbox__inner{
       background-color: $linx-red-theme;
@@ -589,4 +588,15 @@ body[data-theme='red'] {
     }
   }
   
+  .ant-radio-wrapper{
+    .ant-radio{
+      .ant-radio-inner{
+        &::after{
+          background-color: $linx-red-theme;
+        }
+        border-color: $linx-red-theme;
+      }
+    }
+  }
+
 }
