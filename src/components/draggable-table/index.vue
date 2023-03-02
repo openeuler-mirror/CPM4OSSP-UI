@@ -38,7 +38,14 @@ export default {
         }
       }
     }
-
+    return <a-table
+      props={props}
+      scopedSlots={ $scopedSlots }
+      on={$listeners}
+      components={resizeableTitle}
+    >
+      {Object.keys($slots).map(slot => <template slot={slot}>{ $slots[slot] }</template>)}
+    </a-table>
   }
 }
 </script>
