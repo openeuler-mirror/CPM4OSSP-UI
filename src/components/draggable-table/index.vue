@@ -49,3 +49,18 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+::v-deep .resize-table-th {
+  position: relative;
+  .table-draggable-handle {
+    height: 100% !important;
+    bottom: 0;
+    left: -10px !important;
+    cursor: col-resize;
+    touch-action: none;
+    position: absolute;
+    border: 1px solid red;
+  }
+}
+</style>
