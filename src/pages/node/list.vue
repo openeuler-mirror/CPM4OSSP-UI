@@ -1,5 +1,6 @@
 <template>
   <div>
+    <a-button type="primary" icon="plus" @click="handleAdd">节点注册</a-button>
     <a-table
       :loading="loading"
       :columns="columns"
@@ -13,10 +14,15 @@
       <a-tooltip slot="name" slot-scope="text" placement="topLeft" :title="text">
         <span>{{ text }}</span>
       </a-tooltip>
-      <template slot="status" slot-scope="text">
+      <template slot="status" slot-scope="text, record">
         <a-icon v-if="text===undefined" type="loading" />
-        <span v-if="text == 1"><a-icon class="success" :style="{ paddingRight: '3px' }" type="check" /> 在线</span>
-        <span v-if="text == 0"><a-icon class="danger" :style="{ paddingRight: '3px' }" type="close" /> 离线</span>
+        <span v-if="record.checkStatus === false" class="danger" style="cursor:pointer;border-bottom:1px solid" @click="registerNode(record)">
+          <span><a-icon :style="{paddingRight: "3px"}" type="api" />未注册</span>
+        </span>
+        <span v-else>
+          <span v-if="text == 1"><a-icon class="success" :style="{ paddingRight: '3px' }" type="check" /> 在线</span>
+          <span v-if="text == 0"><a-icon class="danger" :style="{ paddingRight: '3px' }" type="close" /> 离线</span>
+        </span>
       </template>
       <a-tooltip slot="system" slot-scope="text" placement="topLeft" :title="text">
         <a-icon v-if="text===undefined" type="loading" />
@@ -27,6 +33,9 @@
         <span>{{ text }}</span>
       </a-tooltip>
       <template slot="operation" slot-scope="text, record">
+        <a-tooltip title="节点管理">
+          <a-button :disabled="record.status === 0||record.checkStatus === false" type="link" @click="handleNode(record)"><a-icon type="desktop" /></a-button>
+        </a-tooltip>
         <a-tooltip title="删除">
           <a-button type="link" @click="handleDelete(record)"><a-icon type="delete" class="danger" /></a-button>
         </a-tooltip>
@@ -263,6 +272,30 @@ export default {
       this.drawerVisible = false
       this.$router.push({
         query: { nodeId: null }
+      })
+    },
+    // 节点注册
+    registerNode(record) {
+      this.$confirm({
+        title: '系统提示',
+        content: '确定要注册 ' + record.name + ' 节点么？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          // 注册
+          let query = JSON.parse(JSON.stringify(record))
+          query.checkStatus = true
+          query.type = 'edit'
+          editNode(query).then((res) => {
+            if (res.code === 200) {
+              this.$notification.success({
+                message: res.msg,
+                duration: 2
+              })
+              this.loadData()
+            }
+          })
+        }
       })
     }
   }
