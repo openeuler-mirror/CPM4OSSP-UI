@@ -18,7 +18,11 @@ module.exports = {
     electronBuilder: {
       // nodeIntegration: true,
       builderOptions: {
-        productName: 'mini-system'
+        productName: 'mpms-system',
+        electronDownload: {
+          mirror: 'http://172.30.31.77:8080/uploadfiles/electron/',
+          customDir: 'v13.6.9'
+        }
       },
       icon: 'build/icons/32x32.png',
       desktop: {

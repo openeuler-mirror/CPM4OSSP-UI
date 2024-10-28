@@ -32,7 +32,8 @@ export function editNode(params) {
     loginName: params.loginName,
     loginPwd: params.loginPwd,
     type: params.type,
-    proxyPort: params.proxyPort
+    proxyPort: params.proxyPort,
+    checkStatus: params.checkStatus
   }
   return axios({
     url: '/node/save.json',
