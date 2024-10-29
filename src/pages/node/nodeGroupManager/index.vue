@@ -22,6 +22,9 @@
         <span>{{ text }}</span>
       </a-tooltip>
       <template slot="operation" slot-scope="text, record">
+        <a-tooltip title="组内节点">
+          <a-button type="link" @click="handleNode(record)"><a-icon type="snippets" /></a-button>
+        </a-tooltip>
         <a-tooltip title="编辑">
           <a-button type="link" @click="handleEdit(record)"><a-icon type="edit" /></a-button>
         </a-tooltip>
@@ -52,6 +55,18 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <!-- 控制组内节点 -->
+    <a-drawer
+      :title="'组内节点( '+parentMsg.name+' )'"
+      placement="right"
+      :mask-closable="false"
+      :width="700"
+      height="100%"
+      :visible="nodelistVisible"
+      @close="closeShowNodeList"
+    >
+      <NodeList v-if="nodelistVisible" :parent-msg="parentMsg" />
+    </a-drawer>
     <!-- 条件搜索 -->
     <a-drawer
       title="条件搜索"
@@ -108,7 +123,11 @@
 <script>
 import { parseTime } from '@/utils/time'
 import { listGroup, addGroup, updateGroup, deleteGroup } from '@/api/node_group'
+import NodeList from './components/node_list.vue'
 export default {
+  components: {
+    NodeList
+  },
   data() {
     return {
       loading: false,
@@ -254,6 +273,14 @@ export default {
         }
       })
     },
+    // 组内节点
+    handleNode(record) {
+      this.parentMsg = record
+      this.nodelistVisible = true
+    },
+    closeShowNodeList() {
+      this.nodelistVisible = false
+    }
   }
 }
 </script>
