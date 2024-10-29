@@ -1,6 +1,8 @@
 <template>
   <div ref="groupManage" class="groupManage">
     <div ref="filter" class="filter">
+      <a-button type="primary" icon="search" @click="openGroupSearch()">条件搜索</a-button>
+      <a-button type="primary" icon="sync" class="ml10" @click="resetSearch">重置</a-button>
       <a-button type="primary" style="margin-left:10px" icon="plus" @click="openGroupAdd()">新增分组</a-button>
     </div>
     <a-table
@@ -50,18 +52,6 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
-    <!-- 控制组内节点 -->
-    <a-drawer
-      :title="'组内节点( '+parentMsg.name+' )'"
-      placement="right"
-      :mask-closable="false"
-      :width="700"
-      height="100%"
-      :visible="nodelistVisible"
-      @close="closeShowNodeList"
-    >
-      <NodeList v-if="nodelistVisible" :parent-msg="parentMsg" />
-    </a-drawer>
     <!-- 条件搜索 -->
     <a-drawer
       title="条件搜索"
@@ -118,11 +108,7 @@
 <script>
 import { parseTime } from '@/utils/time'
 import { listGroup, addGroup, updateGroup, deleteGroup } from '@/api/node_group'
-import NodeList from './components/node_list.vue'
 export default {
-  components: {
-    NodeList
-  },
   data() {
     return {
       loading: false,
@@ -244,11 +230,29 @@ export default {
     },
     // 编辑分组
     handleEdit(record) {
-
+      this.groupForm.name = record.name
+      this.groupId = record.id
+      this.controlGroupVisible = true
+      this.isGroupAdd = false
     },
     // 删除分组
     handleDelete(record) {
-
+      this.$confirm({
+        title: '系统提示',
+        content: '确定要删除 ' + record.name + ' 分组吗？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          deleteGroup({
+            id: record.id
+          }).then(res => {
+            if (res.code === 200) {
+              this.listQuery.pageNum = 1
+              this.listGroup()
+            }
+          })
+        }
+      })
     },
   }
 }
