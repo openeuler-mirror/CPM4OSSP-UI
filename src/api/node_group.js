@@ -59,3 +59,27 @@ export function nodelist(data) {
     data
   })
 }
+
+// 分组添加节点
+export function addnode(data) {
+  return axios({
+    url: '/nodegroupinfo/addnode',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    method: 'post',
+    data
+  })
+}
+
+// 分组删除节点
+export function deletenode(data) {
+  return axios({
+    url: '/nodegroupinfo/deletenode',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    method: 'post',
+    data
+  })
+}
