@@ -11,6 +11,12 @@ const children = [
     component: () => import('../pages/node/list')
   },
   {
+    path: '/node/nodeGroupManager',
+    name: 'nodeGroupManager',
+    meta: { title: '分组管理' },
+    component: () => import('../pages/node/nodeGroupManager')
+  },
+  {
     path: '/user/list',
     name: 'user-list',
     meta: { title: '用户列表' },

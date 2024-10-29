@@ -8,7 +8,8 @@ const routeMenuMap = {
   'audit': '/audit/list',
   'user': '/user/list',
   'repository_source': '/repository/source',
-  'repository_package': '/repository/package'
+  'repository_package': '/repository/package',
+  'nodeGroupManager': '/node/nodeGroupManager'
 }
 
 export default routeMenuMap
