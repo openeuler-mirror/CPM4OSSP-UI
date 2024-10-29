@@ -20,6 +20,12 @@
         <span>{{ text }}</span>
       </a-tooltip>
       <template slot="operation" slot-scope="text, record">
+        <a-tooltip title="编辑">
+          <a-button type="link" @click="handleEdit(record)"><a-icon type="edit" /></a-button>
+        </a-tooltip>
+        <a-tooltip title="删除">
+          <a-button type="link" @click="handleDelete(record)"><a-icon type="delete" class="danger" /></a-button>
+        </a-tooltip>
       </template>
     </a-table>
     <!-- 控制节点分组 -->
@@ -44,6 +50,68 @@
         </a-form-model-item>
       </a-form-model>
     </a-modal>
+    <!-- 控制组内节点 -->
+    <a-drawer
+      :title="'组内节点( '+parentMsg.name+' )'"
+      placement="right"
+      :mask-closable="false"
+      :width="700"
+      height="100%"
+      :visible="nodelistVisible"
+      @close="closeShowNodeList"
+    >
+      <NodeList v-if="nodelistVisible" :parent-msg="parentMsg" />
+    </a-drawer>
+    <!-- 条件搜索 -->
+    <a-drawer
+      title="条件搜索"
+      placement="right"
+      :mask-closable="false"
+      :width="500"
+      height="100%"
+      :visible="groupSearch"
+      @close="groupSearch = false"
+      @keyup.native.enter="sumbitGroupSearch"
+    >
+      <div>
+        <a-form-model
+          ref="searchForm"
+          :model="listQuery"
+          :wrapper-col="{ span: 20 }"
+          :label-col="{ span: 4 }"
+        >
+          <a-form-model-item label="分组ID" prop="id">
+            <a-input v-model="listQuery.id" placeholder="请输入分组ID,按回车(Enter)查找" />
+          </a-form-model-item>
+          <a-form-model-item label="分组名称" prop="name">
+            <a-input v-model="listQuery.name" placeholder="请输入分组名称,按回车(Enter)查找" />
+          </a-form-model-item>
+        </a-form-model>
+      </div>
+      <div
+        :style="{
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          borderTop: '1px solid #377bc9',
+          padding: '10px 16px',
+          background: '#fff',
+          textAlign: 'right',
+          zIndex: 1,
+        }"
+      >
+        <!-- <a-button :style="{ marginRight: '8px' }" type="primary" @click="resetSearch">
+          重置
+        </a-button> -->
+        <a-button :style="{ marginRight: '8px' }" @click="groupSearch = false">
+          取消
+        </a-button>
+        <a-button type="primary" @click="sumbitGroupSearch">
+          确定
+        </a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
@@ -173,7 +241,15 @@ export default {
           })
         }
       })
-    }
+    },
+    // 编辑分组
+    handleEdit(record) {
+
+    },
+    // 删除分组
+    handleDelete(record) {
+
+    },
   }
 }
 </script>
