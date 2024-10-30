@@ -56,16 +56,6 @@
           {{ item }}
         </div>
       </div>
-      <!-- <a-pagination
-        style="float:right;margin-top:15px;"
-        :current="filePagination.current"
-        :page-size="1"
-        :total="filePagination.total"
-        :show-total="total => `共 ${total} 页`"
-        :show-quick-jumper="true"
-        show-less-items
-        @change="filePaginationChange"
-      /> -->
     </a-drawer>
 
     <!-- 所属软件包弹窗 -->
