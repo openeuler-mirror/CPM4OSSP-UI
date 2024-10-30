@@ -39,17 +39,39 @@
         <a-tag v-else><a-icon type="container" /> {{ text }}</a-tag>
       </a-tooltip>
       <template slot="operation" slot-scope="text, record">
+        <a-button :disabled="!record.isRead" type="primary" @click="selectedFile = record;fileQuery.pageNum = 1;showFile(record)">查看</a-button>
         <a-button type="primary" class="ml10" @click="handllPkgModel(record)">所属软件包</a-button>
       </template>
     </a-table>
+    <a-drawer
+      v-if="isShowDetail"
+      title="配置文件详情"
+      placement="right"
+      :visible="isShowDetail"
+      :width="650"
+      @close="isShowDetail = false"
+    >
+      <div class="showFileDetail" :style="{height:tableHeight + 100 + 'px',overflow:'auto'}">
+        <div v-for="(item,index) in fileDetail" :key="index">
+          {{ item }}
+        </div>
+      </div>
+    </a-drawer>
 
+    <!-- 所属软件包弹窗 -->
+    <a-modal v-model="pkgVisible" title="详情信息" :footer="null" :destroy-on-close="true" :width="750">
+      <FilePackage :file-name="fileName" />
+    </a-modal>
   </div>
 </template>
 
 <script>
 import { lsFile, catFile } from '@/api/fs'
+import FilePackage from '../components/file-package.vue'
 export default {
-
+  components: {
+    FilePackage
+  },
   props: {
     node: {
       type: Object,
@@ -171,6 +193,31 @@ export default {
       tempDir.pop()
       this.path = tempDir.join('/')
       this.lsFile()
+    },
+    // 查看文件
+    showFile() {
+      this.isShowDetail = true
+      catFile({
+        nodeId: this.node.id,
+        path: this.selectedFile.name,
+        pageNum: this.fileQuery.pageNum,
+        pageSize: this.fileQuery.pageSize }).then(res => {
+        if (res.code === 200) {
+          this.fileDetail = res.data.list[0]?.split('\n')
+          this.fileQuery.total = Math.ceil(res.data.total / res.data.pageSize) || 0
+          const tbody = document.querySelector('.showFileDetail')
+          tbody.scrollTo(0, 0)
+        }
+      })
+    },
+    // 文件详情翻页
+    filePaginationChange(current, size) {
+      this.fileQuery.pageNum = current
+      this.showFile()
+    },
+    handllPkgModel(row) {
+      this.pkgVisible = true
+      this.fileName = row.name
     }
   }
 }
