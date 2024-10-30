@@ -34,6 +34,7 @@
       title="待添加节点"
       :width="800"
     >
+      <AllNode v-if="penddingAddVisble" :parent-list="list" :parent-msg="parentMsg" @nodelist="nodelist" />
       <template slot="footer">
         <a-button type="primary" @click="penddingAddVisble = false">
           关闭
@@ -57,6 +58,7 @@ import { getNodeStatus, setNodeLocalIp, getNodeList } from '@/api/node'
 import AllNode from './all_node.vue'
 export default {
   components: {
+    AllNode,
     NodeLayout
   },
   props: {

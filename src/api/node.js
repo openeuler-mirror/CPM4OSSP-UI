@@ -1,5 +1,6 @@
-import axios from '@/utils/request'
+import axios from './config'
 
+// node 列表
 export function getNodeList(params) {
   return axios({
     url: '/node/list_data.json',
@@ -8,6 +9,7 @@ export function getNodeList(params) {
   })
 }
 
+// node 状态
 export function getNodeStatus(nodeId) {
   return axios({
     url: '/node/node_status',
@@ -20,20 +22,27 @@ export function getNodeStatus(nodeId) {
   })
 }
 
+// 编辑节点
 export function editNode(params) {
   const data = {
     id: params.id,
     name: params.name,
     protocol: params.protocol,
     url: params.url,
-    timeOut: params.timeOut,
+    timeout: params.timeout,
     cycle: params.cycle,
     openStatus: params.openStatus,
     loginName: params.loginName,
     loginPwd: params.loginPwd,
     type: params.type,
     proxyPort: params.proxyPort,
-    checkStatus: params.checkStatus
+    checkStatus: params.checkStatus,
+    status: params.status,
+    linxSerial: params.linxSerial || null,
+    snType: params.snType || null,
+    snText: params.snText || null,
+    system: params.system,
+    kernel: params.kernel
   }
   return axios({
     url: '/node/save.json',
@@ -42,6 +51,7 @@ export function editNode(params) {
   })
 }
 
+// 删除 node
 export function deleteNode(id) {
   return axios({
     url: '/node/del.json',
@@ -50,6 +60,7 @@ export function deleteNode(id) {
   })
 }
 
+// 节点 top 命令
 export function getNodeTop(data) {
   return axios({
     url: '/node/getTop',
@@ -61,6 +72,7 @@ export function getNodeTop(data) {
   })
 }
 
+// 获取进程列表
 export function getProcessList(nodeId) {
   return axios({
     url: '/node/processList',
@@ -73,6 +85,7 @@ export function getProcessList(nodeId) {
   })
 }
 
+// 杀进程
 export function killPid(params) {
   return axios({
     url: '/node/kill.json',
@@ -91,6 +104,7 @@ export function setNodeLocalIp(data) {
   })
 }
 
+// 获取历史监控数据
 export function getTopHistory(data) {
   return axios({
     url: 'node/getTopHistory',
@@ -99,17 +113,7 @@ export function getTopHistory(data) {
   })
 }
 
-export function getOsVersion(data) {
-  return axios({
-    url: '/node/getOsVersion',
-    method: 'post',
-    data,
-    headers: {
-      tip: 'no'
-    }
-  })
-}
-
+// 获取apt锁状态
 export function getAptStatus(data) {
   return axios({
     url: '/node/sshGetAptStatus',
@@ -118,6 +122,7 @@ export function getAptStatus(data) {
   })
 }
 
+// apt解锁
 export function unLockApt(data) {
   return axios({
     url: '/node/sshUnLockApt',
@@ -126,3 +131,14 @@ export function unLockApt(data) {
   })
 }
 
+// 节点列表 包含搜索
+export function getNodeListSearch(data) {
+  return axios({
+    url: '/node/search',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    method: 'post',
+    data
+  })
+}

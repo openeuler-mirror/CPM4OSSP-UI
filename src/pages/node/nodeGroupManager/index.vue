@@ -280,6 +280,27 @@ export default {
     },
     closeShowNodeList() {
       this.nodelistVisible = false
+    },
+    // 打开条件搜索框
+    openGroupSearch() {
+      this.groupSearch = true
+    },
+    // 条件搜索
+    sumbitGroupSearch() {
+      this.listQuery.pageNum = 1
+      this.listGroup()
+      this.groupSearch = false
+    },
+    // 重置
+    resetSearch() {
+      this.listQuery = {
+        pageNum: 1,
+        pageSize: 10,
+        id: '',
+        name: ''
+      }
+      this.listGroup()
+      this.groupSearch = false
     }
   }
 }
