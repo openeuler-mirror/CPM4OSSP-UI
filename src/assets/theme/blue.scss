@@ -14,6 +14,7 @@ $blue-gray-color:#909399;
 $blue-theme-rgb1: rgba($color: $blue-theme, $alpha: 0.05);
 
 body[data-theme='blue'] {
+    // 字体颜色
   .info{
       color: $blue-info-color !important;
     }
@@ -32,11 +33,66 @@ body[data-theme='blue'] {
   .gray {
     color: $blue-gray-color;
   }
+  // 小字
   .warning-small{
     color: $blue-warning-color;
     font-size: 12px;
   }
+// 按钮
+.ant-btn {
+    &:active{
+      color: $blue-theme;
+      border-color: $blue-theme;
+    }
+    border-radius: 20px;
+    &:hover{
+      border-color: $blue-theme;
+      color: $blue-theme;
+    }
+    // 被禁用的按钮
+    &[disabled] {
+      background-color: #f5f5f5 !important;
+      border-color: #d9d9d9 !important;
+      &:hover{
+        color:rgba(0, 0, 0, 0.25)!important;
+      }
+    }
+    &.ant-btn-primary{
+      background-color: $blue-theme;
+      border-color: $blue-theme;
+      &:hover{
+        color: #fff;
+      }
+    }
+    &.ant-btn-danger{
+      background-color: $blue-danger-color;
+      border-color: $blue-danger-color;
+      &:hover{
+        color: #fff;
+      }
+    }
+    &.ant-btn-link{
+      // 被禁用的文字按钮样式
+      &[disabled] {
+        background-color: transparent !important;
+        border-color: transparent !important;
+        &:hover{
+          span{
+            color: $blue-dark-color !important;
+          }
+        }
+      }
+      color: $blue-dark-color;
+      &:hover{
+        border-color: transparent;
+        span{
+          color: $blue-theme;
+        }
+      }
+    }
+  } 
 
+  // 按钮组
   .ant-radio-group{
     .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before{
       background-color: $blue-theme;
@@ -54,8 +110,9 @@ body[data-theme='blue'] {
       border: 1px solid $blue-theme;
     }
   }
-  
-  .ant-tag{
+
+  // 标签
+.ant-tag{
     &.info{
       background-color: #fff !important;
       border-color: $blue-light-border-color;
@@ -86,14 +143,16 @@ body[data-theme='blue'] {
       color: #fff !important;
     }
   }
-  
+//   侧边栏
   .ant-layout-sider{
       border-right: 1px solid rgba($color: #eee, $alpha: 0.1);
       background: url('../assets/images/blue/sider-bg.png');
       .side-menu {
+          // background: url('../assets/images/blue/sider-bg.png');
           background: transparent;
       }
   }
+  //侧边栏菜单
   .side-menu{
     .ant-menu-submenu{
         margin: 15px 0;
@@ -116,6 +175,7 @@ body[data-theme='blue'] {
         }
       }
   }
+  // 侧边栏菜单收起
   .ant-menu-submenu-popup {
     &.ant-menu-dark { 
       .ant-menu-item-selected {
@@ -123,8 +183,9 @@ body[data-theme='blue'] {
       }
     }
   }
-
+  // 表格
   .ant-table {
+    //   表头
     .ant-table-header {
         thead {
           tr {
@@ -139,6 +200,7 @@ body[data-theme='blue'] {
           }
         }
     }
+    // 表体
     .ant-table-body {
         tbody {
           tr {
@@ -161,6 +223,7 @@ body[data-theme='blue'] {
           }
         }
       }
+      // .ant-table-fixed{
         tbody{
           tr{
             td:last-child{
@@ -179,9 +242,11 @@ body[data-theme='blue'] {
             }
           }
         }
+      // }
     }
   }
-
+  
+  // 分页
   .ant-pagination{
     .ant-pagination-item-link {
       border-radius: 20px;
@@ -214,6 +279,7 @@ body[data-theme='blue'] {
     }
   }
   
+  // 输入框
   .ant-input{
     border-radius: 20px;
     &:hover{
@@ -224,6 +290,7 @@ body[data-theme='blue'] {
       box-shadow: 0 0 0 2px $blue-theme-rgb;
     }
   }
+  // 数字输入框
   .ant-input-number{
     border-radius: 20px;
     &:hover{
@@ -237,7 +304,7 @@ body[data-theme='blue'] {
       border-radius: 0 20px 20px 0;
     }
   }
-
+  // 下拉框
   .ant-select-selection{
     border-radius: 20px;
   }
@@ -266,6 +333,7 @@ body[data-theme='blue'] {
     }
   }
   
+  // 开关
   .ant-switch{
     &.ant-switch-checked{
       background-color: $blue-theme;
@@ -276,7 +344,8 @@ body[data-theme='blue'] {
       color: $blue-theme;
     }
   }
-
+  
+  // 时间选择器
   .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled){
     border-color: $blue-theme;
   }
@@ -294,11 +363,13 @@ body[data-theme='blue'] {
       }
       .ant-calendar-today{
         .ant-calendar-date{
+          // background-color: $defult-color;
           color: $blue-theme;
           border-color: $blue-theme;
         }
         &.ant-calendar-selected-day{
           .ant-calendar-date{
+            // background-color: $defult-color;
             color: #fff;
             border-color: $blue-theme;
           }
@@ -328,6 +399,7 @@ body[data-theme='blue'] {
         }
       }
     }
+    // 选择时间
     .ant-calendar-time-picker-select{
       li{
         &:hover{
@@ -335,6 +407,7 @@ body[data-theme='blue'] {
         }
       }
     }
+    // 快捷时间范围按钮
     .ant-btn{
       &.isActive{
         color: $blue-theme;
@@ -342,10 +415,11 @@ body[data-theme='blue'] {
       }
     }
   }
+    // 时间范围区间
   .ant-calendar-range .ant-calendar-in-range-cell::before{
     background: $blue-theme-rgb;
   }
-
+  // 抽屉
   .ant-drawer-content-wrapper {
     .ant-drawer-content {
       .ant-drawer-wrapper-body {
@@ -361,11 +435,12 @@ body[data-theme='blue'] {
       }
     }
   }
+//   抽屉底部按钮
 .drawerFooter {
     border-color: $blue-theme;
     background: #ffffff;
-  }
-
+  } 
+// 内容区
 .layout-content{
   background: url('../assets/images/blue/content-bg.png');
   .wrap{
@@ -378,7 +453,9 @@ body[data-theme='blue'] {
   }
 }
 
+// header头部
 .app-header{
+  // tab页面
 .ant-tabs {
   .ant-tabs-nav-wrap{
     .ant-tabs-tab{
@@ -423,10 +500,14 @@ body[data-theme='blue'] {
 }
 }
 
+// 登录页面
 .login-wrapper{
   background-image: url('./images/blue/login-bg.png');
   .server-ip{
       color: #fff;
+      &:hover{
+        // color: $blue-theme;
+      }
     }
   .login-card{
     background: rgba($color: #fff, $alpha: 0.2);
@@ -436,7 +517,7 @@ body[data-theme='blue'] {
     background: rgba($color: $blue-theme-hover, $alpha: 0.8);
   }
 }
-
+// 下拉菜单组件
 .ant-dropdown-menu{
 .ant-dropdown-menu-item{
   &:hover{
@@ -470,6 +551,7 @@ body[data-theme='blue'] {
     }
   }
 
+// 复选框
 .ant-checkbox:hover{
   &.ant-checkbox-checked{
     .ant-checkbox-inner{
@@ -494,6 +576,7 @@ body[data-theme='blue'] {
     background-color: $blue-theme;
     border-color: $blue-theme;
   }
+// 树形复选框
 .ant-tree-checkbox:hover .ant-tree-checkbox-inner{
   border-color: $blue-theme;
 }
@@ -509,6 +592,7 @@ body[data-theme='blue'] {
       background-color: $blue-theme;
     }
   }
+  // element树形复选框
   .el-tree{
     .el-checkbox__input.is-checked .el-checkbox__inner,.el-checkbox__input.is-indeterminate .el-checkbox__inner{
       background-color: $blue-theme;
@@ -534,6 +618,7 @@ body[data-theme='blue'] {
     }
   }
 
+  // 单选按钮
   .ant-radio-wrapper{
     .ant-radio{
       .ant-radio-inner{
@@ -544,6 +629,7 @@ body[data-theme='blue'] {
       }
     }
   }
+  // 标签页
   .ant-tabs-nav .ant-tabs-tab{
     &.ant-tabs-tab-active{
       color: $blue-theme;
@@ -555,7 +641,7 @@ body[data-theme='blue'] {
   .ant-tabs-ink-bar{
     background-color: $blue-theme;
   }
-
+  // 模态框
   .ant-modal{
     .ant-modal-close{
       i{
@@ -573,12 +659,13 @@ body[data-theme='blue'] {
       border-top-color: $blue-theme;
     }
   }
-
+  // 目录树
   .file-layout{
     .filter{
       border-color: $blue-theme;
     }
   }
+  // 列表圆点
   .listSpot{
     width: 10px;
     height: 10px;
@@ -587,4 +674,21 @@ body[data-theme='blue'] {
     margin-top: 6px;
   }
 
+  // 上传组件样式
+  .ant-upload button{
+    border-radius: 0px 20px 20px  0px;
+    background-color: $blue-theme;
+    color: #fff;
+    &:hover{
+      background-color: $blue-theme;
+      color: #fff;
+    }
+  }
+  .upload-input{
+    &:hover{
+      border: 1px solid #d9d9d9;
+      border-right: none;
+    }
+  }
 }
+

@@ -39,6 +39,12 @@ const children = [
     name: 'repository-source',
     meta: { title: '软件源模板列表' },
     component: () => import('@/pages/repository/source')
+  },
+  {
+    path: '/script/script',
+    name: 'script-script',
+    meta: { title: '脚本列表' },
+    component: () => import('@/pages/script/script')
   }
 ]
 
