@@ -8,6 +8,9 @@
       :row-key="(record, index) => record.id"
       :pagination="false"
     >
+      <template slot="action" slot-scope="record">
+        <a-button type="link" :disabled="record.disabled" @click="handleRedirect(record)">{{ record.disabled ? '节点不在线' : '进入节点' }}</a-button>
+      </template>
     </a-table>
   </div>
 </template>
@@ -39,6 +42,7 @@ export default {
   },
   async mounted() {
     await this.getPkgInstallInfo()
+    this.getAllNodeStatus()
   },
   methods: {
     getPkgInstallInfo() {
@@ -60,6 +64,24 @@ export default {
       // 打开对应的节点管理页面，若节点不在线则只跳转到节点列表
       this.$store.commit('SET_OPEN_NODE', row)
       this.$router.push('/node/list')
+    },
+    // 查询对应节点状态，设置能否跳转
+    getAllNodeStatus() {
+      let promiseList = []
+      this.packageList.forEach(item => {
+        const p = getNodeStatus(item.id).then(res => {
+          if (res.code === 200) {
+            // 主机在线
+            item.disabled = false
+          } else {
+            item.disabled = true
+          }
+        })
+        promiseList.push(p)
+      })
+      Promise.all(promiseList).then(() => {
+        this.packageList = [...this.packageList]
+      })
     }
   }
 }

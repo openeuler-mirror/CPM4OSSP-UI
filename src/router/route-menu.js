@@ -5,11 +5,14 @@
  */
 const routeMenuMap = {
   'nodeList': '/node/list',
+  'nodeGroupManager': '/node/nodeGroupManager',
   'audit': '/audit/list',
   'user': '/user/list',
   'repository_source': '/repository/source',
   'repository_package': '/repository/package',
-  'nodeGroupManager': '/node/nodeGroupManager'
+  'manageScript': '/script/script',
+  'manageCommand': '/script/command',
+  'upgrade': '/upgrade/list'
 }
 
 export default routeMenuMap
