@@ -30,6 +30,15 @@ export function executeScriptApi(data) {
   })
 }
 
+// 获取命令列表
+export function getCmommandListApi(data) {
+  return request({
+    url: '/manageCommandPre/list',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data
+  })
+}
 // 执行结果列表
 export function getExecResApi(data) {
   return request({
