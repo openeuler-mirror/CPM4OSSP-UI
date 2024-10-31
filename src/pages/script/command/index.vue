@@ -18,14 +18,68 @@
       <a slot="path" slot-scope="text">{{ text }}</a>
       <a slot="createTime" slot-scope="text">{{ text }}</a>
       <template slot="operation" slot-scope="text, record">
+        <a-tooltip title="下发">
+          <a-button type="link" @click="handleExecCommand(record)"><a-icon type="export" /></a-button>
+        </a-tooltip>
       </template>
     </a-table>
+
+    <!-- 添加命令 -->
+    <a-modal
+      v-model="addCommandVisible"
+      title="添加命令"
+      width="700px"
+      :mask-closable="false"
+      :destroy-on-close="true"
+      @ok="addCommand"
+    >
+      <Commandform ref="commandform" />
+    </a-modal>
+
+    <!-- 下发命令 -->
+    <a-modal
+      v-model="execCommandVisible"
+      title="下发命令"
+      width="700px"
+      :footer="execScriptFooter ? null : undefined"
+      :mask-closable="false"
+      :destroy-on-close="true"
+      @ok="execCommand"
+      @cancel="cancelExecCommand"
+    >
+      <ExecScriptRes v-if="isShowExecRes" :result-data="execRes" />
+      <ExecScript v-else ref="execScriptForm" :script-item="selectedRow" type="command" />
+
+      <template slot="footer">
+        <div>
+          <a-button type="white" @click="cancelExecCommand">取消</a-button>
+          <a-button type="primary" :loading="buttonLoading" @click="execCommand">确定</a-button>
+        </div>
+      </template>
+
+    </a-modal>
+
+    <!-- 下发结果 -->
+    <a-drawer
+      title="执行结果"
+      width="700"
+      :visible="execResVisible"
+      :destroy-on-close="true"
+      :mask-closable="false"
+      @close="onCloseEexecRes"
+    >
+      <ExecResult :type="1" />
+    </a-drawer>
 
   </div>
 </template>
 
 <script>
 import { getCmommandListApi } from '@/api/script'
+import Commandform from './components/commandform.vue'
+import ExecScript from '@/pages/script/script/components/execScript.vue'
+import ExecScriptRes from '@/pages/script/script/components/execScriptRes.vue'
+import ExecResult from '../components/execResult.vue'
 
 export default {
   components: {
@@ -37,6 +91,11 @@ export default {
   data() {
     return {
       loading: false,
+      addCommandVisible: false,
+      execCommandVisible: false,
+      isShowExecRes: false,
+      execResVisible: false,
+      execScriptFooter: false,
       tableHeight: 0,
       total: 0,
       listQuery: {
@@ -64,6 +123,17 @@ export default {
         showSizeChanger: true,
         showTotal: (total) => {
           return `共 ${total} 条`
+        }
+      }
+    }
+  },
+  watch: {
+    isShowExecRes: {
+      handler(val) {
+        if (val) {
+          this.execScriptFooter = true
+        } else {
+          this.execScriptFooter = false
         }
       }
     }
@@ -100,6 +170,50 @@ export default {
       this.listQuery.pageNum = pagination.current
       this.listQuery.pageSize = pagination.pageSize
       this.loadData()
+    },
+
+    // 添加命令
+    handleAddCommand() {
+      this.addCommandVisible = true
+    },
+    // 添加命令-确认
+    addCommand() {
+      this.$refs['commandform'].addCommand().then(() => {
+        this.addCommandVisible = false
+        this.loadData()
+      })
+    },
+
+    // 下发命令-按钮
+    handleExecCommand(record) {
+      this.selectedRow = record
+      this.execCommandVisible = true
+    },
+
+    // 下发命令-确认
+    execCommand() {
+      this.buttonLoading = true
+      this.$refs['execScriptForm'].execCommand().then((res) => {
+        this.isShowExecRes = true
+        this.execRes = res.data
+      }).finally(() => {
+        this.buttonLoading = false
+      })
+    },
+
+    // 关闭下发弹窗
+    cancelExecCommand() {
+      this.isShowExecRes = false
+      this.execCommandVisible = false
+    },
+
+    // 下发结果-按钮
+    handleExecRes() {
+      this.execResVisible = true
+    },
+
+    onCloseEexecRes() {
+      this.execResVisible = false
     }
 
   }

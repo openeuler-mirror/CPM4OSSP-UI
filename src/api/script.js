@@ -39,6 +39,27 @@ export function getCmommandListApi(data) {
     data
   })
 }
+
+// 新增命令
+export function addCommandApi(data) {
+  return request({
+    url: '/manageCommandPre/insert',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data
+  })
+}
+
+// 下发命令
+export function executeCommandApi(data) {
+  return request({
+    url: '/manageCommandPre/executeLocal',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data
+  })
+}
+
 // 执行结果列表
 export function getExecResApi(data) {
   return request({
