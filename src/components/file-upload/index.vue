@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { uploadScriptApi } from '@/api/script'
 
 export default {
   props: {
@@ -34,8 +35,23 @@ export default {
       const { onError, onSuccess, file } = option
       const formData = new FormData()
       formData.append('file', file)
+      uploadScriptApi(formData)
+        .then((res) => {
+          if (res.code === 200) {
+            onSuccess(res)
+            this.$emit('on-success', res)
+          } else {
+            onError(res.data.msg)
+          }
+        })
+        .catch(err => {
+          console.error(err)
+        })
     }
   }
 }
 </script>
 
+<style lang="scss" scoped>
+
+</style>
