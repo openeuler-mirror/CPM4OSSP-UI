@@ -29,3 +29,13 @@ export function executeScriptApi(data) {
     data
   })
 }
+
+// 执行结果列表
+export function getExecResApi(data) {
+  return request({
+    url: '/manageCommand/list',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data
+  })
+}

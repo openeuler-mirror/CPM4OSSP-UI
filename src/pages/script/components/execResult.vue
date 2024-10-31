@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { getExecResApi } from '@/api/script'
+
 export default {
   props: {
     type: {
@@ -58,12 +60,33 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getRes()
+    setTimeout(() => {
+      this.tableHeight = this.$refs.tableBox?.clientHeight ? this.$refs.tableBox?.clientHeight - 140 : 600
+    })
+  },
   methods: {
+    getRes() {
+      this.loading = true
+      getExecResApi({
+        type: this.type,
+        ...this.listQuery
+      })
+        .then(res => {
+          if (res.code === 200) {
+            this.total = Number(res.data?.total) || 0
+            this.tableData = res.data?.list || []
+          }
+        })
+        .finally(() => { this.loading = false })
+    },
 
     // 分页、排序、筛选变化时触发
     change(pagination) {
       this.listQuery.pageNum = pagination.current
       this.listQuery.pageSize = pagination.pageSize
+      this.getRes()
     }
   }
 }
