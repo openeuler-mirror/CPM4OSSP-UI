@@ -18,6 +18,9 @@
       <a slot="createTime" slot-scope="text">{{ text }}</a>
 
       <template slot="operation" slot-scope="text, record">
+        <a-tooltip title="下发">
+          <a-button type="link" @click="handleExecuteScript(record)"><a-icon type="export" /></a-button>
+        </a-tooltip>
       </template>
     </a-table>
 
@@ -33,22 +36,52 @@
       <FileUpload :url="'/script/upload'" @on-success="uploadSuccess" />
     </a-modal>
 
+    <!-- 下发脚本弹框 -->
+    <a-modal
+      v-model="execScriptVisible"
+      title="下发脚本"
+      width="700px"
+      :footer="execScriptFooter ? null : undefined"
+      :mask-closable="false"
+      :destroy-on-close="true"
+      @ok="handleExecScript"
+      @cancel="handleCancelExecScript"
+    >
+      <ExecScriptRes v-if="isShowExecRes" :result-data="execRes" />
+      <ExecScript v-else ref="execScriptForm" :script-item="selectedRow" />
+
+      <template slot="footer">
+        <div>
+          <a-button type="white" @click="handleCancelExecScript">取消</a-button>
+          <a-button type="primary" :loading="buttonLoading" @click="handleExecScript">确定</a-button>
+        </div>
+      </template>
+    </a-modal>
+
   </div>
 </template>
 
 <script>
 import { getScriptListApi } from '@/api/script'
 import FileUpload from '@/components/file-upload'
+import ExecScript from './components/execScript.vue'
+import ExecScriptRes from './components/execScriptRes.vue'
 
 export default {
   components: {
     FileUpload,
+    ExecScript,
+    ExecScriptRes,
   },
   data() {
     return {
       tableHeight: 0,
       uploadVisible: false,
+      execScriptVisible: false,
       loading: false,
+      execScriptFooter: false,
+      isShowExecRes: false,
+      execRes: null,
       selectedRow: null,
       scriptTable: [],
       total: 0,
@@ -76,6 +109,17 @@ export default {
         showSizeChanger: true,
         showTotal: (total) => {
           return `共 ${total} 条`
+        }
+      }
+    }
+  },
+  watch: {
+    isShowExecRes: {
+      handler(val) {
+        if (val) {
+          this.execScriptFooter = true
+        } else {
+          this.execScriptFooter = false
         }
       }
     }
@@ -125,6 +169,29 @@ export default {
       })
       this.uploadVisible = false
       this.loadData()
+    },
+
+    // 下发按钮
+    handleExecuteScript(record) {
+      this.selectedRow = record
+      this.execScriptVisible = true
+    },
+
+    //  确认下发
+    handleExecScript() {
+      this.buttonLoading = true
+      this.$refs['execScriptForm'].handleSubmit().then((res) => {
+        this.isShowExecRes = true
+        this.execRes = res.data
+      }).finally(() => {
+        this.buttonLoading = false
+      })
+    },
+
+    // 关闭下发弹窗
+    handleCancelExecScript() {
+      this.isShowExecRes = false
+      this.execScriptVisible = false
     }
   }
 }
