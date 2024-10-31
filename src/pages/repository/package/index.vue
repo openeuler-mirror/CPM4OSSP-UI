@@ -17,6 +17,12 @@
       <a-button type="primary" icon="search" class="mr10" @click="openSearch">条件搜索</a-button>
       <a-button type="primary" icon="sync" class="mr10" @click="resetSearch">重置</a-button>
       <a-button type="primary" :disabled="selectedRows.length===0" @click="batchEditPakClass">批量修改软件包类别</a-button>
+      <a-button
+        type="primary"
+        style="margin-left:10px"
+        :disabled="selectedRows.length===0"
+        @click="batchPutPakClass"
+      >批量下发软件包</a-button>
     </div>
     <!-- 软件源模板表格数据 -->
     <a-table
@@ -305,16 +311,19 @@ export default {
     })
   },
   methods: {
+    // 获取软件包类别
     getPkgSectionsList() {
       getPkgSectionsList().then(res => {
         this.sectionsList = res.data || []
       })
     },
+    // 刷新源模板列表
     getPlanList() {
       getPlanSourceList().then(res => {
         this.planList = res.data
       })
     },
+    // 初始化数据
     initData() {
       getPlanSourceList().then(res => {
         this.planList = res.data || []
@@ -324,12 +333,14 @@ export default {
         }
       })
     },
+    // 刷新列表
     freshenList() {
       this.listQuery.page = 1
       this.listQuery.limit = 10
       this.classification = 'all'
       this.getPackageByPage()
     },
+    // 改变软件包类别
     changeClassification() {
       this.listQuery.page = 1
       this.listQuery.limit = 10
@@ -340,6 +351,7 @@ export default {
         this.changeClassification()
       }
     },
+    // 获取软件包列表
     getPackageByPage() {
       const params = {
         page: this.listQuery.page,
@@ -387,6 +399,13 @@ export default {
       this.isBatchEdit = false
       this.putVisible = true
       this.selectRow = row
+    },
+    // 批量下发
+    batchPutPakClass() {
+      this.selectGroup = []
+      this.selectNode = []
+      this.isBatchEdit = true
+      this.putVisible = true
     },
     // 确定编辑
     handleEditClass() {
