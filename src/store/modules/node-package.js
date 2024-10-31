@@ -2,7 +2,9 @@ import { getInstallablePackage } from '@/api/node_package'
 
 const nodePackage = {
   state: {
+    // 可安装软件包
     installPackages: [],
+    // 当前选中的软件包
     selectPackage: ''
   },
   mutations: {
@@ -14,6 +16,7 @@ const nodePackage = {
     }
   },
   actions: {
+    // 获取软件可安装软件包列表
     getPackages({ commit }, params) {
       return new Promise((reslove, reject) => {
         getInstallablePackage(params).then(res => {
