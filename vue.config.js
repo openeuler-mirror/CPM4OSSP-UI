@@ -16,11 +16,11 @@ module.exports = {
   pluginOptions: {
     // electron构建时的插件
     electronBuilder: {
-      // nodeIntegration: true,
+      nodeIntegration: true,
       builderOptions: {
         productName: 'mpms-system',
         electronDownload: {
-          mirror: 'http://172.30.31.77:8080/uploadfiles/electron/',
+          // mirror: 'http://172.30.31.77:8080/uploadfiles/electron/',
           customDir: 'v13.6.9'
         }
       },

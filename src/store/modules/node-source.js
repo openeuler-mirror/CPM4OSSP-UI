@@ -1,8 +1,14 @@
+
 const nodeSource = {
   state: {
+    // 存放节点，检测源配置30秒后才能再次操作
     nodeCheckSetting: []
   },
+  getters: {
+
+  },
   mutations: {
+    // 倒计时30秒
     SET_CHECK_SOURCE_INTERVAL(state, nodeId) {
       const obj = {
         nodeId,
@@ -19,6 +25,9 @@ const nodeSource = {
       state.nodeCheckSetting.push(obj)
     }
   },
+  actions: {
+
+  }
 }
 
 export default nodeSource
