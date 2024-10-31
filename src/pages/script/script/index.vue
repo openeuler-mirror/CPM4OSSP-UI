@@ -2,6 +2,7 @@
   <div ref="tableBox" style="height: 100%;">
     <div ref="filter" class="filter">
       <a-button type="primary" icon="plus" @click="handleUploadScript">上传脚本</a-button>
+      <a-button type="primary" @click="handleExecRes">下发结果</a-button>
     </div>
 
     <a-table
@@ -58,6 +59,18 @@
       </template>
     </a-modal>
 
+    <!-- 下发结果抽屉 -->
+    <a-drawer
+      title="执行结果"
+      width="800"
+      :visible="execResVisible"
+      :destroy-on-close="true"
+      :mask-closable="false"
+      @close="onCloseEexecRes"
+    >
+      <ExecResult :type="0" />
+    </a-drawer>
+
   </div>
 </template>
 
@@ -66,12 +79,14 @@ import { getScriptListApi } from '@/api/script'
 import FileUpload from '@/components/file-upload'
 import ExecScript from './components/execScript.vue'
 import ExecScriptRes from './components/execScriptRes.vue'
+import ExecResult from '../components/execResult.vue'
 
 export default {
   components: {
     FileUpload,
     ExecScript,
     ExecScriptRes,
+    ExecResult
   },
   data() {
     return {
@@ -81,6 +96,7 @@ export default {
       loading: false,
       execScriptFooter: false,
       isShowExecRes: false,
+      execResVisible: false,
       execRes: null,
       selectedRow: null,
       scriptTable: [],
@@ -192,6 +208,15 @@ export default {
     handleCancelExecScript() {
       this.isShowExecRes = false
       this.execScriptVisible = false
+    },
+
+    // 下发结果-按钮
+    handleExecRes() {
+      this.execResVisible = true
+    },
+
+    onCloseEexecRes() {
+      this.execResVisible = false
     }
   }
 }
