@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from './config'
 
 export function getPlanSourceList() {
   return request({
@@ -7,6 +7,7 @@ export function getPlanSourceList() {
   })
 }
 
+// 分页时需要先调用一下这个接口
 export function getSourcePackageByPlan(data) {
   return request({
     url: '/querySourceByPlan',
@@ -16,6 +17,7 @@ export function getSourcePackageByPlan(data) {
   })
 }
 
+// 分页时传页码和每页数据条数
 export function getSourcePackagePage(data) {
   return request({
     url: '/queryPage',
@@ -25,6 +27,7 @@ export function getSourcePackagePage(data) {
   })
 }
 
+// 新增一条软件源方案
 export function insertSource(data) {
   return request({
     url: '/insertSource',
@@ -34,6 +37,7 @@ export function insertSource(data) {
   })
 }
 
+// 删除一条软件源方案
 export function deleteSource(data) {
   return request({
     url: '/delSource',
@@ -42,6 +46,7 @@ export function deleteSource(data) {
   })
 }
 
+// 修改源方案
 export function updateSourcePlan(data) {
   return request({
     url: '/updateSource',
@@ -50,6 +55,7 @@ export function updateSourcePlan(data) {
   })
 }
 
+// 创建批量任务
 export function batchProcessing(data, isTip) {
   const headers = {
     'Content-Type': 'application/json; charset=UTF-8',
@@ -65,30 +71,7 @@ export function batchProcessing(data, isTip) {
   })
 }
 
-export function updateUserPkgPlan(data) {
-  return request({
-    url: '/updateUserPkgPlan',
-    method: 'post',
-    data
-  })
-}
-
-export function queryUserPkgPlan(data) {
-  return request({
-    url: '/queryUserPkgPlan',
-    method: 'post',
-    data
-  })
-}
-
-export function delUserPkgPlan(data) {
-  return request({
-    url: '/delUserPkgPlan',
-    method: 'post',
-    data
-  })
-}
-
+// 新增用户分类
 export function insertUserPkgPlan(data) {
   return request({
     url: '/updatePkgClass',
@@ -97,10 +80,21 @@ export function insertUserPkgPlan(data) {
   })
 }
 
-export function getPkgSize(data) {
+// 批量下发
+export function putToTaskGroupQueue(data) {
   return request({
-    url: 'getPkgSize',
+    url: '/node/putToTaskGroupQueue',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
     method: 'post',
     data
+  })
+}
+
+export function getPkgSectionsList() {
+  return request({
+    url: 'pkgSectionsList',
+    method: 'post'
   })
 }
