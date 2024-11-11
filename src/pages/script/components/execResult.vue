@@ -63,7 +63,7 @@ export default {
   mounted() {
     this.getRes()
     setTimeout(() => {
-      this.tableHeight = this.$refs.tableBox?.clientHeight ? this.$refs.tableBox?.clientHeight - 140 : 600
+      this.computedTableHeight();
     })
   },
   methods: {
@@ -87,6 +87,9 @@ export default {
       this.listQuery.pageNum = pagination.current
       this.listQuery.pageSize = pagination.pageSize
       this.getRes()
+    },
+    computedTableHeight() {
+      this.tableHeight = this.$refs.tableBox?.clientHeight ? this.$refs.tableBox?.clientHeight - 140 : 600
     }
   }
 }
