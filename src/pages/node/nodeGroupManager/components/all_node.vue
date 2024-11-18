@@ -76,7 +76,6 @@ export default {
       getNodeList().then((res) => {
         if (res.code === 200) {
           const nodeList = res.data || []
-
           this.list = nodeList.filter((element) => {
             if (element.checkStatus) return element
           })

@@ -77,7 +77,7 @@ import SourceSetting from './source_setting.vue'
 import lockStatus from '../components/lock-status.vue'
 export default {
   components: {
-    lockStatus，
+    lockStatus,
     SourceSetting
   },
   props: {
@@ -271,7 +271,6 @@ export default {
               this.$notification.success({ message: '回滚节点软件源配置成功' })
               this.getSource()
             } else {
-              this.$notification.error({ message: res.msg || '回滚节点软件源配置失败' })
             }
           }).finally(() => {
             this.rollbackLoading = false
