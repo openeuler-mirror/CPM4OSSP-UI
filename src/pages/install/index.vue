@@ -25,7 +25,7 @@
       </g>
     </svg>
     <a-card class="login-card" hoverable>
-      <a-card-meta title="初始化账户" style="textalign: center" description="你需要创建一个账户用以后续登录管理系统" />
+      <a-card-meta title="初始化管理员账户" style="textalign: center" />
       <br>
       <a-form :form="loginForm" :label-col="{ span: 0 }" class="init-form" @submit="handleLogin">
         <a-form-item :wrapper-col="{ span: 24 }" class="init-user-name">
