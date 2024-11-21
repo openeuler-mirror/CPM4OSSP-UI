@@ -29,6 +29,10 @@ const app = {
                 currentMenu = subMenu
               }
             })
+          } else {
+            if (menu.path === tab.path) {
+              currentMenu = menu
+            }
           }
         })
         tab.title = currentMenu.title
