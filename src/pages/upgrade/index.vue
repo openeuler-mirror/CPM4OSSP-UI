@@ -39,6 +39,8 @@
   </template>
   
   <script>
+import { nodePkgOp } from '@/api/upgrade'
+
   export default {
     data() {
       return {
@@ -84,12 +86,28 @@
     methods: {
       // 刷新表格
       fetchTable() {
-        this.upgradeList = [
-            {
-
-            }
-        ]
-      },
+      this.loading = true
+      return new Promise((resolve, reject) => {
+        nodePkgOp({
+          pkgName: this.tableQuery.packageName,
+          nodeName: this.tableQuery.nodeName,
+          startTime: this.tableQuery.timeRange?.[0],
+          endTime: this.tableQuery.timeRange?.[1],
+          success: this.tableQuery.upgradeRes === '' ? '' : Boolean(this.tableQuery.upgradeRes),
+          opType: this.tableQuery.opType,
+          ...this.listQuery
+        })
+          .then(res => {
+            this.upgradeList = res?.data?.list || []
+            this.total = +res?.data?.total || 0
+            resolve(res)
+          })
+          .catch(err => reject(err))
+          .finally(() => {
+            this.loading = false
+          })
+      })
+    },
       // 分页
       onShowSizeChange(pagination) {
         this.listQuery.pageNum = pagination.current
