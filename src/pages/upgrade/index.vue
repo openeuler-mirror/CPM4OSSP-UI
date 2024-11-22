@@ -1,6 +1,8 @@
 <template>
     <div ref="tableWrapper" style="height: 100%;">
       <div ref="filter" class="filter">
+        <a-button type="primary" icon="search" class="mr10" @click="openSearch">条件搜索</a-button>
+        <a-button type="primary" icon="sync" class="mr10" @click="resetSearch">重置</a-button>
       </div>
       <a-table
         :row-key="(record, index) => index"
@@ -35,6 +37,91 @@
           <a-tag v-else class="danger">失败</a-tag>
         </template>
       </a-table>
+      <a-drawer
+      title="条件搜索"
+      placement="right"
+      :mask-closable="false"
+      :width="500"
+      height="100%"
+      :visible="searchVisible"
+      @close="searchVisible = false"
+      @keyup.native.enter="sumbitSearch"
+    >
+      <a-form-model
+        ref="searchForm"
+        :model="tableQuery"
+        :wrapper-col="{ span: 20 }"
+        :label-col="{ span: 4 }"
+      >
+        <a-form-model-item label="软件包名" prop="packageName">
+          <a-input v-model="tableQuery.packageName" placeholder="请输入软件包名,按回车(Enter)查找" allow-clear />
+        </a-form-model-item>
+        <a-form-model-item label="节点名" prop="nodeName">
+          <a-input v-model="tableQuery.nodeName" placeholder="请输入节点名,按回车(Enter)查找" allow-clear />
+        </a-form-model-item>
+        <a-form-model-item label="时间" prop="timeRange">
+          <a-range-picker
+            :disabled-date="disabledDate"
+            style="width: 100%;"
+            :value="tableQuery.timeRange"
+            :show-time="{format: 'HH:mm:ss'}"
+            format="YYYY-MM-DD HH:mm:ss"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            @change="onchangeTime"
+          >
+            <template slot="renderExtraFooter">
+              <a-button size="small" :class="{isActive: isActive === 1}" @click="computedTime(1)">昨天</a-button>
+              <a-button size="small" :class="{isActive: isActive === 3}" @click="computedTime(3)">近三天</a-button>
+              <a-button size="small" :class="{isActive: isActive === 5}" @click="computedTime(5)">近五天</a-button>
+              <a-button size="small" :class="{isActive: isActive === 7}" @click="computedTime(7)">近一周</a-button>
+            </template>
+          </a-range-picker>
+        </a-form-model-item>
+        <a-form-model-item label="状态" prop="upgradeRes">
+          <a-select
+            v-model="tableQuery.upgradeRes"
+            placeholder="请选择操作结果"
+            class="filter-item"
+          >
+            <a-select-option v-for="item in resOption" :key="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="类型" prop="opType">
+          <a-select
+            v-model="tableQuery.opType"
+            placeholder="请选择操作类型"
+            class="filter-item"
+          >
+            <a-select-option v-for="item in typeOption" :key="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+      </a-form-model>
+
+      <div
+        :style="{
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          borderTop: '1px solid #377bc9',
+          padding: '10px 16px',
+          background: '#fff',
+          textAlign: 'right',
+          zIndex: 1,
+        }"
+      >
+        <a-button :style="{ marginRight: '8px' }" @click="searchVisible = false">
+          取消
+        </a-button>
+        <a-button type="primary" @click="sumbitSearch">
+          确定
+        </a-button>
+      </div>
+    </a-drawer>
     </div>
   </template>
   
@@ -60,7 +147,8 @@ import { nodePkgOp } from '@/api/upgrade'
           { title: '状态', dataIndex: 'success', key: 'success', width: 100, ellipsis: true, scopedSlots: { customRender: 'status' }},
           { title: '操作', dataIndex: 'operation', key: 'operation', align: 'center', width: 100, scopedSlots: { customRender: 'operation' }}
         ],
-        upgradeList: []
+        upgradeList: [],
+        searchVisible: false
       }
     },
     computed: {
@@ -112,6 +200,23 @@ import { nodePkgOp } from '@/api/upgrade'
       onShowSizeChange(pagination) {
         this.listQuery.pageNum = pagination.current
         this.listQuery.pageSize = pagination.pageSize
+        this.fetchTable()
+      },
+      openSearch() {
+        this.searchVisible = true
+      },
+      resetSearch() {
+        this.tableQuery.packageName = ''
+        this.tableQuery.nodeName = ''
+        this.tableQuery.timeRange = null
+        this.tableQuery.upgradeRes = ''
+        this.tableQuery.opType = ''
+        this.sumbitSearch()
+      },
+      sumbitSearch() {
+        this.listQuery.pageNum = 1
+        this.listQuery.pageSize = 10
+        this.searchVisible = false
         this.fetchTable()
       }
     }

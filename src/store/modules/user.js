@@ -73,7 +73,9 @@ const user = {
               })
               element.childs = childs
             } else {
-              element.path = routeMenuMap[element.id]
+              if (element && routeMenuMap && routeMenuMap[element.id]) {
+                element.path = routeMenuMap[element.id];
+              }
             }
           })
           commit('setMenus', res.data)
