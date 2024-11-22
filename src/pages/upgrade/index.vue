@@ -278,23 +278,20 @@ export default {
           ...this.listQuery
         })
           .then(res => {
-            const blob = new Blob([res])
-
-            // 创建下载链接
-            const link = document.createElement('a')
-            link.href = URL.createObjectURL(blob)
-
-            link.setAttribute('download', `升级报表_${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`)
-
-            document.body.appendChild(link)
-            link.click()
-            document.body.removeChild(link)
-            window.URL.revokeObjectURL(link.href)
-            resolve()
+            const blob = new Blob([res]);
+            // 创建并配置下载链接
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `升级报表_${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+            // 触发下载
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            // 释放对象URL
+            window.URL.revokeObjectURL(link.href);
+            resolve();
           })
           .catch(err => reject(err))
-          .finally(() => {
-          })
       })
     },
 
