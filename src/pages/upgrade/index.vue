@@ -224,7 +224,7 @@ export default {
     fetchTable() {
       this.loading = true
       return new Promise((resolve, reject) => {
-        nodePkgOp({
+        const params = {
           pkgName: this.tableQuery.packageName,
           nodeName: this.tableQuery.nodeName,
           startTime: this.tableQuery.timeRange?.[0],
@@ -232,11 +232,18 @@ export default {
           success: this.tableQuery.upgradeRes === '' ? '' : Boolean(this.tableQuery.upgradeRes),
           opType: this.tableQuery.opType,
           ...this.listQuery
-        })
+        }
+        if (!params.pkgName || !params.nodeName || !params.startTime || !params.endTime) {
+          reject(new Error('Invalid input parameters'))
+          return
+        }
+        nodePkgOp(params)
           .then(res => {
-            this.upgradeList = res?.data?.list || []
-            this.total = +res?.data?.total || 0
-            resolve(res)
+            if(res && res.code === 200) {
+              this.upgradeList = res?.data?.list || []
+              this.total = +res?.data?.total || 0
+              resolve(res)
+            }
           })
           .catch(err => reject(err))
           .finally(() => {

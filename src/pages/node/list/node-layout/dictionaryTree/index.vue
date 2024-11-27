@@ -148,9 +148,12 @@ export default {
     lsFile() {
       this.loading = true
       if (this.path[0] !== '/') {
-        let tempDir = this.path.split('')
-        tempDir.unshift('/')
-        this.path = tempDir.join('')
+        this.path = '/' + this.path
+      }
+      if (!this.node || !this.node.id || !this.path) {
+        console.error('Invalid input parameters')
+        this.loading = false
+        return
       }
       lsFile({ nodeId: this.node.id,
         path: this.path,
@@ -164,6 +167,10 @@ export default {
           } else {
             this.backPrevious()
           }
+        }).catch((error) => {
+          this.$notification.error({
+            message: error || '文件列表加载失败'
+          })
         }).finally(() => {
           this.loading = false
         })
