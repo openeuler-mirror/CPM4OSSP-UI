@@ -41,7 +41,16 @@
         <a-tag v-if="text" class="success">成功</a-tag>
         <a-tag v-else class="danger">失败</a-tag>
       </template>
+
+      <template slot="operation" slot-scope="text, record">
+        <a-button type="link" @click="handleUpgradeInfo(record)"><a-icon type="more" /></a-button>
+      </template>
     </a-table>
+
+    <a-drawer title="升级详情" placement="right" width="35%" :visible="drawerVisible" @close="onClose">
+      <upgrade-info :upgarde-res="upgardeRes" />
+    </a-drawer>
+
     <a-drawer
       title="条件搜索"
       placement="right"
@@ -133,8 +142,12 @@
 <script>
 import dayjs from 'dayjs'
 import moment from 'moment'
+import UpgradeInfo from './upgradeInfo/index.vue'
 import { nodePkgOp, nodePkgOpExport } from '@/api/upgrade'
 export default {
+  components: {
+    UpgradeInfo
+  },
   data() {
     return {
       loading: false,
@@ -200,6 +213,13 @@ export default {
     })
   },
   methods: {
+    handleUpgradeInfo(record) {
+      this.drawerVisible = true
+      this.upgardeRes = record?.opResult || ''
+    },
+    onClose() {
+      this.drawerVisible = false
+    },
     // 刷新表格
     fetchTable() {
       this.loading = true
@@ -278,20 +298,23 @@ export default {
           ...this.listQuery
         })
           .then(res => {
-            const blob = new Blob([res]);
-            // 创建并配置下载链接
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `升级报表_${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
-            // 触发下载
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            // 释放对象URL
-            window.URL.revokeObjectURL(link.href);
-            resolve();
+            const blob = new Blob([res])
+
+            // 创建下载链接
+            const link = document.createElement('a')
+            link.href = URL.createObjectURL(blob)
+
+            link.setAttribute('download', `升级报表_${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`)
+
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            window.URL.revokeObjectURL(link.href)
+            resolve()
           })
           .catch(err => reject(err))
+          .finally(() => {
+          })
       })
     },
 
