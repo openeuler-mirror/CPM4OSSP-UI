@@ -179,6 +179,7 @@ import NodeLayout from './node-layout'
 import NodeOperation from './components/node_operation.vue'
 import { isIpAndPort } from '@/utils/validate'
 import { mapState } from 'vuex'
+import { deepClone } from '@/utils/obj'
 export default {
   components: {
     NodeLayout,
@@ -338,7 +339,7 @@ export default {
             item['status'] = 1
             this.list = [...this.list]
             // 获取到节点调用一次编辑接口
-            const query = JSON.parse(JSON.stringify(item))
+            const query = deepClone(item)
             query.type = ''
             editNode(query)
           } else {
@@ -438,7 +439,7 @@ export default {
         cancelText: '取消',
         onOk: () => {
           // 注册
-          let query = JSON.parse(JSON.stringify(record))
+          let query = deepClone(record)
           query.checkStatus = true
           query.type = 'edit'
           editNode(query).then((res) => {
