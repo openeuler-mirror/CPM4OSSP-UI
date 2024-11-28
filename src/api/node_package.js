@@ -1,4 +1,4 @@
-import request from '../utils/request'
+import request from './config'
 // import qs from 'qs'
 
 export function addPackageTask(data) {

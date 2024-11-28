@@ -1,4 +1,4 @@
-import axios from '@/utils/request'
+import axios from './config'
 
 export function checkSystem() {
   return axios({
