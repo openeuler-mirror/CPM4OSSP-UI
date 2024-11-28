@@ -65,3 +65,12 @@ export function deepEqual(a, b) {
     }
     return true;
   }
+
+/**
+ * 将多维数组转换为一维数组
+ * @param {Array} arr - 多维数组
+ * @returns {Array} 一维数组
+ */
+export function flattenArray(arr) {
+  return arr.reduce((flat, item) => flat.concat(Array.isArray(item) ? flattenArray(item) : item), []);
+}
