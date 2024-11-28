@@ -10,7 +10,9 @@ const routeMenuMap = {
   'user': '/user/list',
   'repository_source': '/repository/source',
   'repository_package': '/repository/package',
-  'manageScript': '/script/script'
+  'manageScript': '/script/script',
+  'manageCommand': '/script/command',
+  'upgrade': '/upgrade/list'
 }
 
 export default routeMenuMap
