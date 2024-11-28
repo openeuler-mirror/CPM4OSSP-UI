@@ -150,11 +150,13 @@ export default {
     this.tableHeight = (this.$refs.welcome.clientHeight - 144) / 2
     await this.loadNodeProcess()
     this.$nextTick(() => {
+      this.getScroller()
     })
   },
   beforeDestroy() {
     clearInterval(this.topChartTimer)
     this.topChart && this.topChart.dispose()
+    this.cancelScroll()
   },
   methods: {
     // 初始化页面
@@ -283,6 +285,12 @@ export default {
             start: this.start,
             end: this.end
           }
+          // 用于X轴坐标范围修改，但是存在问题（会出现资源监控曲线图异常的情况）
+          // {
+          //   type: 'slider',
+          //   start: this.start,
+          //   end: this.end
+          // }
         ],
         series: series,
         color: ['#dc3545', '#377bc9', '#E3AA75']
@@ -405,6 +413,75 @@ export default {
       const start = (pageNum - 1) * pageSize
       const end = start + pageSize
       this.processList = this.allProcessList?.slice(start, end)
+    },
+    // 设置监听滚动元素
+    getScroller() {
+      // 获取表格可视区域高度
+      let tableBody = document.querySelector('.node-table .ant-table-body')
+      let lastScrollTop = 0
+      // 初始索引
+      let start = 0
+      let end = 20
+      this.scrollListener = throttle(this.handleScroll.bind(null, {
+        el: tableBody,
+        lastScrollTop,
+        start,
+        end
+      }), 300)
+
+      tableBody.addEventListener('scroll', this.scrollListener)
+    },
+    handleScroll(opt, e) {
+      // 滚动进度
+      let process = e.target.scrollTop / (opt.el.scrollHeight - opt.el.clientHeight)
+
+      if (e.target.scrollTop < opt.lastScrollTop) {
+        // 向上滚动
+        // 滚动到0%时加载上一页数据,始终渲染20条数据
+        if (process === 0) {
+          // 判断是否还在第一页数据
+          if (opt.start === 0 || opt.start < 0 || opt.start - 10 < 0) {
+            this.processList = this.allProcessList?.slice(0, 20)
+            opt.start = 0
+            opt.end = 20
+          } else {
+            this.processList = this.allProcessList?.slice(opt.start - 10, opt.end - 10)
+            opt.start -= 10
+            opt.end -= 10
+            e.target.scrollTop = opt.el.scrollHeight / 2
+          }
+        }
+      } else if (e.target.scrollTop > opt.lastScrollTop) {
+        // 向下滚动
+        // 滚动到100%时加载下一页数据,始终渲染20条数据
+        if (process === 1) {
+          // 滚动到最后一页
+          if (opt.end >= this.allProcessList.length) {
+            this.processList = this.allProcessList?.slice(opt.start, this.allProcessList.length)
+            opt.start = this.allProcessList.length - 20
+            opt.end = this.allProcessList.length
+          } else {
+            this.processList = this.allProcessList?.slice(opt.start + 10, opt.end + 10)
+            opt.start += 10
+            opt.end += 10
+            e.target.scrollTop = opt.el.scrollHeight / 2 - opt.el.clientHeight
+          }
+        }
+      }
+
+      // 记录最后一次滚动的位置
+      opt.lastScrollTop = e.target.scrollTop
+    },
+    // 取消滚动监听
+    cancelScroll() {
+      try {
+        // 在使用动态组件components时，会出现先切换组件，再执行beforeDestory;即使is属性发生变化，beforeDestory可能也不会立即执行，组件的销毁和挂载能可会在下一次的dom更新周期中执行
+        // 此时切换组件，在beforeDestory获取到的dom为下一个页面的dom,但是当前组件的实例还可以使用，所以使用this获取dom
+        let tableBody = this.$el.querySelector('.node-table .ant-table-body')
+        tableBody.removeEventListener('scroll', this.scrollListener)
+      } catch (error) {
+        console.warn(error)
+      }
     }
   }
 }

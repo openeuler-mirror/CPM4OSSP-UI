@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from './config'
 
 export function getSystemMenu() {
   return request({
