@@ -57,7 +57,6 @@
         </div>
       </div>
     </a-drawer>
-
     <!-- 所属软件包弹窗 -->
     <a-modal v-model="pkgVisible" title="详情信息" :footer="null" :destroy-on-close="true" :width="750">
       <FilePackage :file-name="fileName" />

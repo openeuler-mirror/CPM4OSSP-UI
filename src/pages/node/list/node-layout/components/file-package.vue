@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { getPkgByFile } from '@/api/fs'
 export default {
   props: {
     fileName: {
@@ -60,8 +61,32 @@ export default {
     }
   },
   mounted() {
+    this.fetchData()
   },
   methods: {
+    fetchData() {
+      this.loading = true
+      return new Promise((resolve, reject) => {
+        getPkgByFile({
+          pkgFile: this.fileName
+        })
+          .then(res => {
+            res.data.nodePkgVoList.forEach((item, index) => {
+              item.key = index
+              item?.nodeInfoList && item?.nodeInfoList?.forEach((nodeInfo, jIndex) => {
+                nodeInfo.key = nodeInfo.name + jIndex
+              })
+            })
+            this.tableData = res.data.nodePkgVoList
+            // 更新defaultTableKey，使default-expand-all-rows生效，默认展开
+            this.defaultTableKey = this.tableKey(this.defaultTableKey)
+            resolve(res)
+          })
+          .catch((err) => { reject(err) })
+          .finally(() => { this.loading = false })
+      })
+    },
+
     tableKey(defaultNum) {
       let randNumber
       do {
