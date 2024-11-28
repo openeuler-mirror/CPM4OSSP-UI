@@ -17,6 +17,7 @@
 <script>
 import { addUser, updateUser } from '@/api/user'
 import sha1 from 'sha1'
+import { deepClone, deepCloneV2 } from '@/utils/obj'
 export	default	{
   props: {
     rowData: {
@@ -65,7 +66,7 @@ export	default	{
         this.$nextTick(() => {
           this.$refs['editUserForm'].clearValidate()
         })
-        this.temp = JSON.parse(JSON.stringify(val))
+        this.temp = deepCloneV2(val)
         const keys = Object.keys(val)
         if (keys.length === 0) { // 新增用户
           this.createOption = true

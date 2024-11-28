@@ -54,8 +54,8 @@ import { parseTime } from '@/utils/time'
 import NodeLayout from '@/pages/node/list/node-layout'
 import { nodelist, deletenode } from '@/api/node_group'
 import { getNodeStatus, setNodeLocalIp, getNodeList } from '@/api/node'
-
 import AllNode from './all_node.vue'
+import { deepClone, deepCloneV2 } from '@/utils/obj'
 export default {
   components: {
     AllNode,
@@ -168,7 +168,7 @@ export default {
               item['status'] = 1
               this.list = [...this.list]
               // 获取到节点调用一次编辑接口
-              const query = JSON.parse(JSON.stringify(item))
+              const query = deepClone(item)
               query.type = ''
             } else {
               item['status'] = 0
