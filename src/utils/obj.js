@@ -46,3 +46,22 @@ export function deepCloneV2(obj, seen = new WeakMap()) {
 export function unique(arr) {
     return [...new Set(arr)];
   }
+
+/**
+ * 深度比较两个对象是否相等
+ * @param {Object} a - 第一个对象
+ * @param {Object} b - 第二个对象
+ * @returns {boolean} 两个对象是否相等
+ */  
+export function deepEqual(a, b) {
+    if (a === b) return true;
+    if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false;
+  
+    let keysA = Object.keys(a), keysB = Object.keys(b);
+    if (keysA.length !== keysB.length) return false;
+  
+    for (let key of keysA) {
+      if (!keysB.includes(key) || !deepEqual(a[key], b[key])) return false;
+    }
+    return true;
+  }

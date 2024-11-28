@@ -1,7 +1,9 @@
 <template>
   <div ref="welcome" class="welcome">
     <div>
+      <!-- 历史监控数据 -->
       <a-button type="primary" icon="line-chart" @click="handleHistory">历史监控图表</a-button>
+      <!-- 监控区间选择 -->
       <span v-show="node.cycle && node.cycle !== 0">
         <label style="margin:0 5px 0 20px">节点资源监控区间:</label>
         <a-select v-model="interval" style="width:130px" @change="handelChange">
@@ -9,9 +11,16 @@
         </a-select>
       </span>
     </div>
-    <a-divider>资源监控图</a-divider>
+    <a-divider>资源监控图<span class="echarts-tip info"><a-icon type="exclamation-circle" style="margin-right:3px;" />开启资源监控期间,运行平台的主机硬件资源消耗会有所增加</span></a-divider>
+    <!-- top 图表 -->
     <div id="top-chart">{{ noDataText }}</div>
-    <a-divider>进程监控表</a-divider>
+    <a-divider>
+      <a-tooltip title="刷新进程监控表">
+        <a-button type="link" size="small" style="" @click="loadNodeProcess"><a-icon type="sync" /></a-button>
+      </a-tooltip>
+      进程监控表
+    </a-divider>
+    <!-- 进程表格数据 -->
     <a-table
       :loading="loading"
       :columns="columns"
@@ -41,6 +50,7 @@
         </a-tooltip>
       </template>
     </a-table>
+    <!-- 历史监控 -->
     <a-modal
       v-model="monitorVisible"
       width="75%"
@@ -49,6 +59,7 @@
       :footer="null"
       :mask-closable="false"
       :destroy-on-close="true"
+      @cancel="handleModalClose"
     >
       <div ref="filter" class="filter">
         <a-range-picker
@@ -62,6 +73,9 @@
           @change="onchange"
           @ok="searchData"
         />
+        <div class="tip">
+          <a-alert message="使用鼠标滚轮可对图例进行放大和缩小" type="info" show-icon />
+        </div>
       </div>
       <div id="history-chart">请选择日期范围查看历史监控图</div>
     </a-modal>
@@ -73,6 +87,7 @@ import dayjs from 'dayjs'
 import { getNodeTop, getProcessList, killPid, getTopHistory } from '@/api/node'
 import echarts from 'echarts'
 import { parseTime } from '@/utils/time'
+import { throttle } from '@/utils/index'
 export default {
   props: {
     node: {
@@ -120,20 +135,34 @@ export default {
       tableHeight: 0,
       start: 0,
       end: 100,
-      dates: []
+      // 控制日期选择范围在30天
+      dates: [],
+      topChart: null,
+      historyChart: null,
+      // 进程列表总数据
+      allProcessList: [],
+      // 用于取消滚动监听
+      scrollListener: null
     }
   },
-  mounted() {
+  async mounted() {
     this.initData()
     this.tableHeight = (this.$refs.welcome.clientHeight - 144) / 2
+    await this.loadNodeProcess()
+    this.$nextTick(() => {
+    })
   },
-  destroyed() {
+  beforeDestroy() {
     clearInterval(this.topChartTimer)
+    this.topChart && this.topChart.dispose()
   },
   methods: {
+    // 初始化页面
     initData() {
       if (!this.topChartTimer) {
-        this.loadNodeProcess()
+        // 进程列表数据过多时会影响echarts动画，generateChart中关闭动画
+        // this.loadNodeProcess()
+        // 计算多久时间绘制图表
         var millis = 30000
         if (this.node.cycle === 0) {
           this.noDataText = '未开启资源监控'
@@ -147,10 +176,10 @@ export default {
         }
         this.topChartTimer = setInterval(() => {
           this.loadNodeTop()
-          this.loadNodeProcess()
         }, millis)
       }
     },
+    // 请求 top 命令绘制图表
     loadNodeTop() {
       getNodeTop({ nodeId: this.node.id, interval: this.interval }).then(res => {
         if (res.code === 200) {
@@ -165,6 +194,7 @@ export default {
         type: 'line',
         data: [],
         showSymbol: false,
+        // 设置折线为曲线
         smooth: true
       }
       let diskItem = {
@@ -188,6 +218,7 @@ export default {
         showSymbol: false,
         smooth: true
       }
+      // 坐标轴数据组装
       let Xlist = []
       data.forEach(item => {
         if (item != null) {
@@ -201,12 +232,18 @@ export default {
         }
       })
       let series = [cpuItem, memoryItem, diskItem]
+      series.forEach(item => {
+        item.animation = false
+        // 数据量远大于像素点时降低采样策略
+        item.sampling = 'average'
+      })
       if (memoryUsedItem.data.length > 0) {
         series.push(memoryUsedItem)
       }
       let legends = series.map((data) => {
         return data.name
       })
+      // 指定图表的配置项和数据
       return {
         title: {
           text: '监控项'
@@ -235,6 +272,7 @@ export default {
         yAxis: {
           type: 'value',
           axisLabel: {
+            // 设置y轴数值为%
             formatter: '{value} %'
           },
           max: 100
@@ -250,10 +288,13 @@ export default {
         color: ['#dc3545', '#377bc9', '#E3AA75']
       }
     },
+    // 绘制 top 图表
     drawTopChart() {
       let option = this.generateChart(this.topData)
-      const topChart = echarts.init(document.getElementById('top-chart'))
-      topChart.on('dataZoom', (event) => {
+      // 绘制图表
+      this.topChart = echarts.init(document.getElementById('top-chart'))
+      // 记录datazoom开始结束位置
+      this.topChart.on('dataZoom', (event) => {
         if (event.batch) {
           this.start = event.batch[0].start
           this.end = event.batch[0].end
@@ -262,13 +303,24 @@ export default {
           this.end = event.end
         }
       })
-      topChart.setOption(option)
+      this.topChart.setOption(option)
+      this.topChart.resize()
     },
+    // 加载节点进程列表
     loadNodeProcess() {
-      getProcessList(this.node.id).then(res => {
-        if (res.code === 200) {
-          this.processList = res.data
-        }
+      this.loading = true
+      return new Promise((resolve, reject) => {
+        getProcessList(this.node.id).then(res => {
+          if (res.code === 200) {
+            this.allProcessList = res.data
+            this.setNodeProcessPagenation(1, 20)
+            resolve()
+          }
+        })
+          .catch(() => reject())
+          .finally(() => {
+            this.loading = false
+          })
       })
     },
     // kill pid
@@ -296,18 +348,30 @@ export default {
         }
       })
     },
+    // 历史图表
     handleHistory() {
       this.monitorVisible = true
     },
+    // 选择时间
     onchange(value, dateString) {
       this.timeArray.beginDate = new Date(dateString[0]).getTime()
       this.timeArray.endDate = new Date(dateString[1]).getTime()
     },
+    // 画历史图表
     drawHistoryChart() {
       let option = this.generateChart(this.historyData)
-      const historyChart = echarts.init(document.getElementById('history-chart'))
-      historyChart.setOption(option)
+      // 绘制图表
+      this.historyChart = echarts.init(document.getElementById('history-chart'))
+      this.historyChart.setOption(option)
+      this.historyChart.resize()
     },
+    // 历史监控图表弹窗关闭
+    handleModalClose() {
+      if (this.historyChart) {
+        this.historyChart.dispose()
+      }
+    },
+    // 根据时间段获取监控数据
     searchData() {
       const params = {
         nodeId: this.node.id,
@@ -326,19 +390,27 @@ export default {
     dateOpenStatus(status) {
       this.dates = []
     },
+    // 选择日期触发事件
     calendarChange(val) {
       this.dates = val
     },
+    // 日期可选范围控制在30天内
     disabledDate(current) {
       if (this.dates.length === 0) return false
       const disabledDate = this.dates[0] && Math.abs(dayjs(current).diff(this.dates[0], 'day')) > 30
       return disabledDate
+    },
+    // 前端数据分页 直接操作表格数据
+    setNodeProcessPagenation(pageNum, pageSize = 10) {
+      const start = (pageNum - 1) * pageSize
+      const end = start + pageSize
+      this.processList = this.allProcessList?.slice(start, end)
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .welcome {
   height: 100%;
 }
@@ -351,6 +423,12 @@ export default {
 }
 .filter {
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  .tip{
+    height: 25px;
+  }
 }
 .filter-item {
   width: 150px;
@@ -361,5 +439,9 @@ export default {
   text-align: center;
   line-height: 60vh;
   color: rgba(0, 0, 0, 0.25);
+}
+.echarts-tip{
+  font-size: 12px;
+  margin-left: 10px;
 }
 </style>
