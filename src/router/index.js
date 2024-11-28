@@ -45,6 +45,18 @@ const children = [
     name: 'script-script',
     meta: { title: '脚本列表' },
     component: () => import('@/pages/script/script')
+  },
+  {
+    path: '/script/command',
+    name: 'script-command',
+    meta: { title: '命令列表' },
+    component: () => import('@/pages/script/command')
+  },
+  {
+    path: '/upgrade/list',
+    name: 'upgrade-list',
+    meta: { title: '升级列表' },
+    component: () => import('@/pages/upgrade')
   }
 ]
 
