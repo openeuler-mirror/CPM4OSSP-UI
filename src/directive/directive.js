@@ -1,14 +1,24 @@
+const CUSTOMIZE_CLASS_NAME = 'customize';
+let formElementCache;
+
 function checkValue(el, binding) {
-  const oldClassName = 'ant-row ant-form-item'
-  if (binding.value === '' || !binding.value) {
-    el.className = oldClassName + ' customize'
-    document.getElementsByClassName('table-form')[0]['validate'] = () => {
-      return false
+  if (!formElementCache) {
+    formElementCache = document.getElementsByClassName('table-form')[0];
+    if (!formElementCache) {
+      console.error('Element with class "table-form" not found');
+      return;
+    }
+  }
+
+  if (!binding.value) {
+    el.classList.add(CUSTOMIZE_CLASS_NAME);
+    formElementCache['validate'] = () => {
+      return false;
     }
   } else {
-    el.className = oldClassName
-    document.getElementsByClassName('table-form')[0]['validate'] = () => {
-      return true
+    el.classList.remove(CUSTOMIZE_CLASS_NAME);
+    formElementCache['validate'] = () => {
+      return true;
     }
   }
 }
@@ -23,17 +33,30 @@ let validator = {
 }
 
 
-function loading(value) {
-  let type = typeof value
-  if (type !== 'boolean') {
-    console.error(new Error(`Expected a Boolean value but got one ${type}`))
+function isBoolean(value) {
+  return typeof value === 'boolean';
+}
+
+let cachedCanvasId = null;
+
+/**
+ * 控制加载状态的显示与隐藏
+ * @param {boolean} value - 是否显示加载状态
+ * @param {function} [onError] - 错误处理回调函数
+ */
+function loading(value, onError) {
+  if (!isBoolean(value)) {
+    const error = new Error(`Expected a Boolean value but got one ${typeof value}`);
+    console.error(error);
+    if (onError && typeof onError === 'function') {
+      onError(error);
+    }
+    return;
   }
-  let canvasId = document.getElementById('canvas-box')
-  if (!!value) {
-    canvasId.style.display = 'block'
-  } else {
-    canvasId.style.display = 'none'
+  if (!cachedCanvasId) {
+    cachedCanvasId = document.getElementById('canvas-box');
   }
+  cachedCanvasId.style.display = value ? 'block' : 'none';
 }
 
 let waiting = {
