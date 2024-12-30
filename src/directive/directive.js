@@ -1,24 +1,14 @@
-const CUSTOMIZE_CLASS_NAME = 'customize';
-let formElementCache;
-
 function checkValue(el, binding) {
-  if (!formElementCache) {
-    formElementCache = document.getElementsByClassName('table-form')[0];
-    if (!formElementCache) {
-      console.error('Element with class "table-form" not found');
-      return;
-    }
-  }
-
-  if (!binding.value) {
-    el.classList.add(CUSTOMIZE_CLASS_NAME);
-    formElementCache['validate'] = () => {
-      return false;
+  const oldClassName = 'ant-row ant-form-item'
+  if (binding.value === '' || !binding.value) {
+    el.className = oldClassName + ' customize'
+    document.getElementsByClassName('table-form')[0]['validate'] = () => {
+      return false
     }
   } else {
-    el.classList.remove(CUSTOMIZE_CLASS_NAME);
-    formElementCache['validate'] = () => {
-      return true;
+    el.className = oldClassName
+    document.getElementsByClassName('table-form')[0]['validate'] = () => {
+      return true
     }
   }
 }
@@ -32,31 +22,21 @@ let validator = {
   }
 }
 
-
-function isBoolean(value) {
-  return typeof value === 'boolean';
-}
-
-let cachedCanvasId = null;
-
-/**
- * 控制加载状态的显示与隐藏
- * @param {boolean} value - 是否显示加载状态
- * @param {function} [onError] - 错误处理回调函数
- */
-function loading(value, onError) {
-  if (!isBoolean(value)) {
-    const error = new Error(`Expected a Boolean value but got one ${typeof value}`);
-    console.error(error);
-    if (onError && typeof onError === 'function') {
-      onError(error);
-    }
-    return;
+// 根据值确定loading动画是否显示
+function loading(value) {
+  // 参数类型判断
+  let type = typeof value
+  if (type !== 'boolean') {
+    // 抛出错误信息，用于提示开发人员
+    console.error(new Error(`Expected a Boolean value but got one ${type}`))
   }
-  if (!cachedCanvasId) {
-    cachedCanvasId = document.getElementById('canvas-box');
+  let canvasId = document.getElementById('canvas-box')
+  // eslint-disable-next-line no-extra-boolean-cast
+  if (!!value) { // 类型强转换，防止出现异常
+    canvasId.style.display = 'block'
+  } else {
+    canvasId.style.display = 'none'
   }
-  cachedCanvasId.style.display = value ? 'block' : 'none';
 }
 
 let waiting = {
