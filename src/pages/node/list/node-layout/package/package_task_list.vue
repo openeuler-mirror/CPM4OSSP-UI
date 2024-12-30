@@ -8,6 +8,7 @@
         </template>
       </a-statistic>
     </div>
+    <!-- 任务表格数据 -->
     <a-table
       bordered
       :columns="columns"
@@ -101,6 +102,7 @@ export default {
     this.getTaskStatus()
   },
   methods: {
+    // 计算表格高度
     calcTableHeight() {
       this.$nextTick(() => {
         this.tableHeight = window.innerHeight - this.$refs['filter'].clientHeight - 250
@@ -109,10 +111,12 @@ export default {
     getTaskStatus() {
       this.$store.dispatch('getTaskList', { nodeId: this.nodeId })
     },
+    // 所选择的taskList
     onSelectChange(row, packageRow) {
       this.rowKeys = row
       this.selectedTaskList = packageRow
     },
+    // 删除任务列表
     deleteTaskList() {
       let flag = this.selectedTaskList.some(item => {
         return item.taskStatus === 0 || item.taskStatus === 1
@@ -146,6 +150,7 @@ export default {
         }
       })
     },
+    // 查看任务详情
     showDetail(record) {
       if (record.taskViewTimes > 0) return
       const param = { nodeId: this.nodeId, taskId: record.id }
@@ -155,6 +160,7 @@ export default {
         }
       })
     },
+    // 单个删除
     deleteTask(record) {
       this.$confirm({
         title: '系统提示',
@@ -172,6 +178,7 @@ export default {
         }
       })
     },
+    // 控制删除的实际操作
     handleDeleteTask(param) {
       delTaskById(param).then(res => {
         if (res.code === 200) {
