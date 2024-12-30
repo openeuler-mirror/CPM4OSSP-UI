@@ -3,6 +3,7 @@
     <div ref="filter" class="filter">
       <a-button type="primary" icon="plus" @click="handleAdd">新增</a-button>
     </div>
+    <!-- 用户数据表格 -->
     <a-table
       :data-source="list"
       :loading="loading"
@@ -28,12 +29,12 @@
         </a-tooltip>
       </template>
     </a-table>
+    <!-- 新增和编辑区 -->
     <a-modal v-model="editUserVisible" :title="title" :mask-closable="false" @keyup.native.enter="handleEditUserOk" @ok="handleEditUserOk">
       <user-add ref="userAdd" :row-data="rowData" @on-refresh="refreshTable" />
-    </a-modal
+    </a-modal>
   </div>
 </template>
-
 <script>
 import { getUserList, deleteUser, unlockUser } from '../../api/user'
 import { parseTime } from '../../utils/time'
@@ -64,11 +65,13 @@ export default {
     this.loadData()
   },
   methods: {
+    // 计算表格高度
     calcTableHeight() {
       this.$nextTick(() => {
         this.tableHeight = window.innerHeight - this.$refs['filter'].clientHeight - 135
       })
     },
+    // 加载数据
     loadData() {
       this.list = []
       this.loading = true
@@ -80,23 +83,28 @@ export default {
         this.loading = false
       })
     },
+    // 新增用户
     handleAdd() {
       this.title = '新增用户'
       this.rowData = {}
       this.editUserVisible = true
     },
+    // 修改用户
     handleEdit(record) {
       this.title = '编辑用户'
       this.rowData = Object.assign(record)
       this.editUserVisible = true
     },
+    // 提交用户数据
+    handleEditUserOk() {
+      this.$refs.userAdd.formSubmit()
+    },
+    // 刷新表格
     refreshTable() {
       this.editUserVisible = false
       this.loadData()
     },
-    handleEditUserOk() {
-      this.$refs.userAdd.formSubmit()
-    },
+    // 删除用户
     handleDelete(record) {
       this.$confirm({
         title: '系统提示',
@@ -117,6 +125,7 @@ export default {
         }
       })
     },
+    // 解锁
     handleUnlock(record) {
       this.$confirm({
         title: '系统提示',
@@ -140,3 +149,11 @@ export default {
   }
 }
 </script>
+<style scoped>
+.filter {
+  margin-bottom: 10px;
+}
+.ant-btn {
+  margin-right: 10px;
+}
+</style>
