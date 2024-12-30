@@ -1,34 +1,9 @@
 <template>
   <div ref="package" class="package">
+    <!-- 搜索头 -->
     <div ref="filter" class="filter">
-      <a-input-search
-        v-model="keyWord"
-        class="width-150 mr-10"
-        allow-clear
-        placeholder="请输入软件包名"
-        @search="filterData"
-        @pressEnter="filterData"
-      />
-      软件包类型：
-      <a-select v-model="classification" class="width-100 mr-10" @change="classificationChange">
-        <a-select-option v-for="item in classificationList" :key="item.value">
-          {{ item.label }}
-        </a-select-option>
-      </a-select>
-      <a-popover placement="bottom" :overlay-style="{width:'720px'}">
-        <template slot="content">
-          期望状态：未知(u)/安装(i)/删除(r)/清除(p)/保持(h)<br>
-          状态：未安装(n)/已安装(i)/仅存配置(c)/仅解压缩(U)/配置失败(F)/不完全安装(H)/触发器等待(W)/触发器未决(T)<br>
-          示例：ii表示软件包期望状态为安装并且安装成功
-        </template>
-        <a-icon type="exclamation-circle" class="warning help-icon" />
-        软件包状态：
-      </a-popover>
-      <a-select v-model="onlyInstalled" class="width-100 mr-10" @change="loadData">
-        <a-select-option v-for="item in packageStatus" :key="item.value">
-          {{ item.label }}
-        </a-select-option>
-      </a-select>
+      <a-button type="primary" icon="search" @click="openSearch">条件搜索</a-button>
+      <a-button type="primary" icon="sync" @click="handleRefreshPackageList">重置</a-button>
       <a-button type="primary" icon="tool" @click="batchInstall">软件包安装</a-button>
       <a-badge :count="upgradeNum" :title="'可升级软件数'+upgradeNum">
         <a-button class="task-list-btn" type="primary" icon="rise" @click="updatePackageVisible = true">软件包升级</a-button>
@@ -36,13 +11,13 @@
       <a-button class="ml-15" type="danger" :disabled="BtnIsDisabled" icon="delete" @click="batchDelete">批量卸载</a-button>
       <a-badge :count="taskNumNot"><a-button class="task-list-btn" type="primary" icon="file-text" @click="showTaskList">任务列表</a-button></a-badge>
       <lock-status class="ml-15" :node-id="node.id" />
-      <a-button type="primary" icon="sync" @click="freshenList">刷新</a-button>
     </div>
+    <!-- 数据表格 -->
     <a-table
       ref="package_table"
       class="packageTable"
       :row-selection="{ onChange: onSelectChange, selectedRowKeys: rowKeys,getCheckboxProps:checkboxProps }"
-      :data-source="showDataList"
+      :data-source="packageList"
       :loading="loading"
       :columns="columns"
       :pagination="pagination"
@@ -84,6 +59,8 @@
         </a-tooltip>
       </template>
     </a-table>
+
+    <!-- 批量操作模态框 -->
     <a-modal
       v-model="batchInstallVisible"
       width="800px"
@@ -96,6 +73,8 @@
     >
       <package-batch-install ref="packageForm" :node-id="node.id" />
     </a-modal>
+
+    <!-- 包任务列表模态框 -->
     <a-modal
       v-model="packageTaskListVisible"
       title="任务列表"
@@ -110,6 +89,7 @@
         <a-button type="primary" @click="setViewedAll">全部已读</a-button>
       </template>
     </a-modal>
+    <!-- 可升级软件包列表 -->
     <a-modal
       v-model="updatePackageVisible"
       title="可升级软件包列表"
@@ -119,23 +99,94 @@
     >
       <updateable-package-list ref="updateModal" :node-id="node.id" />
     </a-modal>
+
+    <a-drawer
+      title="条件搜索"
+      placement="right"
+      :mask-closable="false"
+      :width="500"
+      height="100%"
+      :visible="searchVisible"
+      @close="searchVisible = false"
+      @keyup.native.enter="sumbitSearch"
+    >
+      <a-form-model
+        ref="searchForm"
+        :model="queryParams"
+        :wrapper-col="{ span: 20 }"
+        :label-col="{ span: 4 }"
+      >
+        <a-form-model-item label="软件包名" prop="name">
+          <a-input v-model="queryParams.name" allow-clear placeholder="请输入软件包名,按回车(Enter)查找" />
+        </a-form-model-item>
+        <a-form-model-item label="软件包状态" prop="status">
+          <a-select v-model="queryParams.status">
+            <a-select-option v-for="item in packageStatus" :key="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="软件包类别" prop="section">
+          <a-select
+            v-model="queryParams.section"
+            allow-clear
+            show-search
+            mode="tags"
+            placeholder="请选择软件包类别,按回车(Enter)查找"
+            class="filter-item"
+            @change="handleChangeSection"
+          >
+            <a-select-option v-for="item in sectionsList" :key="item.section">{{ item.section }}</a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-model-item label="软件包级别" prop="classification">
+          <a-select v-model="queryParams.classification" @change="classificationChange">
+            <a-select-option v-for="item in classificationList" :key="item.value">
+              {{ item.label }}
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+      </a-form-model>
+
+      <div
+        :style="{
+          position: 'absolute',
+          right: 0,
+          bottom: 0,
+          width: '100%',
+          borderTop: '1px solid #377bc9',
+          padding: '10px 16px',
+          background: '#fff',
+          textAlign: 'right',
+          zIndex: 1,
+        }"
+      >
+        <a-button :style="{ marginRight: '8px' }" @click="searchVisible = false">
+          取消
+        </a-button>
+        <a-button type="primary" @click="sumbitSearch">
+          确定
+        </a-button>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
 <script>
-import { getPackageList, setTaskViewed, getInstallablePackage, getUpdateablePackage } from '@/api/node_package'
+import { getPackageList, setTaskViewed, getInstallablePackage, getUpdateablePackage, refreshPackageList } from '@/api/node_package'
+import { getPkgSectionsList } from '@/api/repository'
 import { addPackageTask, startThread } from '@/api/node_package'
-import PackageTaskList from './package_task_list.vue'
 import PackageBatchInstall from './package_batch_install.vue'
-import UpdateablePackageList from './updateable_package_list.vue'
+import PackageTaskList from './package_task_list.vue'
 import { mapGetters } from 'vuex'
+import UpdateablePackageList from './updateable_package_list.vue'
 import lockStatus from '../components/lock-status.vue'
 export default {
   components: {
-    lockStatus,
-    PackageTaskList,
     PackageBatchInstall,
-    UpdateablePackageList
+    PackageTaskList,
+    UpdateablePackageList,
+    lockStatus
   },
   props: {
     node: {
@@ -151,9 +202,10 @@ export default {
       tableHeight: '70vh',
       batchInstallVisible: false,
       list: [],
+      // 操作类型
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 10
       },
       total: 0,
       temp: {},
@@ -161,8 +213,9 @@ export default {
         { title: '软件包名称', dataIndex: 'name', width: 150, ellipsis: true, scopedSlots: { customRender: 'name' }},
         { title: '状态', dataIndex: 'status', width: 100, ellipsis: true, scopedSlots: { customRender: 'status' }},
         { title: '版本', dataIndex: 'version', width: 150, ellipsis: true, scopedSlots: { customRender: 'version' }},
+        { title: '类别', dataIndex: 'section', width: 100, ellipsis: true, scopedSlots: { customRender: 'section' }},
         { title: '体系架构', dataIndex: 'structure', width: 150, ellipsis: true, scopedSlots: { customRender: 'structure' }},
-        { title: '类型', dataIndex: 'classification', width: 100, ellipsis: true, scopedSlots: { customRender: 'classification' }},
+        { title: '级别', dataIndex: 'classification', width: 100, ellipsis: true, scopedSlots: { customRender: 'classification' }},
         { title: '描述', dataIndex: 'content', ellipsis: true, scopedSlots: { customRender: 'content' }},
         { title: '操作', dataIndex: 'operation', scopedSlots: { customRender: 'operation' }, width: 100, align: 'center', fixed: 'right' }
       ],
@@ -179,16 +232,19 @@ export default {
       packageTaskListVisible: false,
       timer: null,
       rowKeys: [],
-      keyWord: '',
-      showDataList: [],
+      queryParams: {
+        name: '',
+        classification: '',
+        status: '',
+        section: undefined
+      },
+      packageList: [],
       isShowInstallableList: false,
       installableList: [],
       updatePackageVisible: false,
-      onlyInstalled: 0,
       selectPackages: [],
       packageKeys: [0],
       timeOut: null,
-      classification: '',
       classificationList: [
         { label: '全部', value: '' },
         { label: '重要', value: 'important' },
@@ -198,21 +254,24 @@ export default {
       upgradeNum: 0,
       upgradeTimer: null,
       packageStatus: [
-        { label: '全部', value: 0 },
-        { label: '正常', value: 1 },
-        { label: '异常', value: 2 }
-      ]
+        { label: '全部', value: '' },
+        { label: '正常', value: 'normal' },
+        { label: '异常', value: 'error' }
+      ],
+      sectionsList: [],
+      searchVisible: false
     }
   },
   computed: {
     ...mapGetters([
       'taskNumNot'
     ]),
+    // 分页
     pagination() {
       return {
         total: this.total,
         current: this.listQuery.page || 1,
-        pageSize: this.listQuery.limit || 10,
+        pageSize: this.listQuery.limit || 20,
         pageSizeOptions: ['10', '20', '50', '100'],
         showSizeChanger: true,
         showTotal: (total) => {
@@ -231,25 +290,36 @@ export default {
     }
   },
   created() {
+    // 更新安装软件包检索库
     getInstallablePackage({ nodeId: this.node.id })
     this.getTaskList()
     this.loadData()
     this.getUpgradeNum()
     this.calcTableHeight()
+    // 启动线程
     startThread({ nodeId: this.node.id })
+    // 创建定时任务,更新任务数
     this.timer = setInterval(this.getTaskList, 10000)
     this.upgradeTimer = setInterval(this.getUpgradeNum, 30 * 60 * 1000)
+    this.getPkgSectionsList()
   },
   beforeDestroy() {
     clearInterval(this.timer)
     clearInterval(this.upgradeTimer)
   },
   methods: {
+    getPkgSectionsList() {
+      getPkgSectionsList().then(res => {
+        this.sectionsList = res.data || []
+      })
+    },
+    // 计算表格高度
     calcTableHeight() {
       setTimeout(() => {
         this.tableHeight = this.$refs.package.clientHeight - 45
       })
     },
+    // 获取可升级软件数
     getUpgradeNum() {
       getUpdateablePackage(this.node.id).then(res => {
         if (res.code === 200) {
@@ -257,25 +327,50 @@ export default {
         }
       })
     },
+    // 加载数据
     loadData() {
       this.loading = true
-      const params = {
+      let params = {
         nodeId: this.node.id,
-        onlyInstalled: this.onlyInstalled
+        pageNum: this.listQuery.page,
+        pageSize: this.listQuery.limit
+      }
+      for (let key in this.queryParams) {
+        if (this.queryParams[key]) {
+          params[key] = this.queryParams[key]
+        }
+        params.section = this.queryParams.section?.[0] || undefined
       }
       getPackageList(params).then(res => {
         if (res.code === 200) {
-          this.list = res.data
-          this.filterData()
+          this.packageList = res.data.list
+          this.total = res.data.total * 1
         }
         this.loading = false
       })
     },
+    // 刷新软件包列表
+    handleRefreshPackageList() {
+      this.queryParams = {
+        name: '',
+        status: '',
+        classification: ''
+      }
+      this.selectPackages = []
+      this.loading = true
+      refreshPackageList({ nodeId: this.node.id }).then(res => {
+        if (res.code === 200) {
+          this.loadData()
+        }
+      })
+    },
+    // 分页、排序、筛选变化时触发
     change(pagination) {
       this.listQuery.page = pagination.current
       this.listQuery.limit = pagination.pageSize
       this.loadData()
     },
+    // 卸载软件包
     handleDelete(record) {
       this.$confirm({
         title: '系统提示',
@@ -307,9 +402,11 @@ export default {
         }
       })
     },
+    // 批量安装
     batchInstall() {
       this.batchInstallVisible = true
     },
+    // 确定安装
     toInstall() {
       this.$refs['packageForm'].handleInstall().then((res) => {
         if (res.code === 200) {
@@ -325,10 +422,12 @@ export default {
         }
       })
     },
+    // 包选择
     onSelectChange(row, packageRow) {
       this.rowKeys = row
       this.selectedPackageList = packageRow
     },
+    // 是否禁用复选框
     checkboxProps(record) {
       return {
         props: {
@@ -336,6 +435,7 @@ export default {
         }
       }
     },
+    // 批量卸载
     batchDelete() {
       this.$confirm({
         title: '提示',
@@ -384,9 +484,11 @@ export default {
     showTaskList() {
       this.packageTaskListVisible = true
     },
+    // 获取任务列表
     getTaskList() {
       this.$store.dispatch('getTaskList', { nodeId: this.node.id })
     },
+    // 设置未读消息全部已读
     setViewedAll() {
       let notViewedList = this.$refs.packageFrom.taskList.filter(item => {
         return item.taskViewTimes === 0
@@ -404,11 +506,7 @@ export default {
         })
       })
     },
-    filterData() {
-      this.showDataList = this.list.filter(item => {
-        return item.name && item.name.match(this.keyWord) && item.classification && item.classification.match(this.classification)
-      })
-    },
+    // 点击软件包
     handleClick(packageName) {
       this.selectPackages = []
       this.temp.name = packageName
@@ -419,14 +517,7 @@ export default {
         }
       })
     },
-    freshenList() {
-      this.keyWord = ''
-      this.onlyInstalled = 0
-      this.classification = ''
-      this.rowKeys = []
-      this.selectedPackageList = []
-      this.loadData()
-    },
+    // 确定升级
     handleUpdate() {
       this.$refs['updateModal'].handleSubmit().then(res => {
         let taskList = []
@@ -454,11 +545,31 @@ export default {
         })
       }).catch()
     },
+    // 选择安装包版本
     InstallPackageSelectChange(row) {
       this.packageKeys = row
     },
-    classificationChange() {
-      this.filterData()
+    // 软件包类型变化
+    classificationChange(data) {
+      this.classification = data
+      // this.loadData()
+    },
+
+    openSearch() {
+      this.searchVisible = true
+    },
+    sumbitSearch() {
+      this.listQuery.page = 1
+      this.listQuery.limit = 10
+      this.searchVisible = false
+      this.loadData()
+    },
+    handleChangeSection(val) {
+      // 设置为只能输入一个
+      if (this.queryParams.section.length > 1) {
+        this.queryParams.section.splice(1)
+        this.queryParams.section = val
+      }
     }
   }
 }
