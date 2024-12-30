@@ -45,6 +45,7 @@
             placeholder="密码至少包含大小写字母、数字、特殊字符，长度为9~50"
           />
         </a-form-item>
+
         <a-button type="primary" html-type="submit" class="btn"> 创建并登录 </a-button>
       </a-form>
     </a-card>
@@ -61,10 +62,12 @@ export default {
     }
   },
   methods: {
+    // login
     handleLogin(e) {
       e.preventDefault()
       this.loginForm.validateFields((err, values) => {
         if (!err) {
+          //  密码强度
           if (!this.checkPasswordStrong(values.userPwd)) {
             this.$notification.error({
               message: '系统管理员密码强度太低',
@@ -77,12 +80,15 @@ export default {
             userPwd: sha1(values.userPwd)
           }
           initInstall(params).then((res) => {
+            // 登录不成功，更新验证码
             if (res.code === 200) {
               this.$notification.success({
                 message: res.msg,
                 duration: 2
               })
+              // 调用 store action 存储当前登录的用户名和 token
               this.$store.dispatch('login', { token: res.data.token, longTermToken: res.data.longTermToken }).then(() => {
+                // 跳转主页面
                 this.$router.push({ path: '/' })
               })
             }
@@ -90,21 +96,26 @@ export default {
         }
       })
     },
+    // /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? +]).*$/
+    // 验证密码安全强度
     checkPasswordStrong(fieldValue) {
       function checkStrong(sPW) {
         let Modes = 0
         for (let i = 0; i < sPW.length; i++) {
+          // 测试每一个字符的类别并统计一共有多少种模式.
           Modes |= CharMode(sPW.charCodeAt(i))
         }
         return bitTotal(Modes)
       }
 
+      // 判断字符类型
       function CharMode(iN) {
         if (iN >= 48 && iN <= 57) { return 1 }
         if (iN >= 65 && iN <= 90) { return 2 }
         if (iN >= 97 && iN <= 122) { return 4 } else return 8 // 特殊字符
       }
 
+      // 统计字符类型
       function bitTotal(num) {
         var modes = 0
         for (let i = 0; i < 4; i++) {
@@ -113,9 +124,15 @@ export default {
         }
         return modes
       }
+
       if (!fieldValue || fieldValue === '') {
         return false
       }
+      /* 密码强度等级说明，字符包括：小写字母、大写字母、数字、特殊字符
+      1-- - 密码包含其中之一
+      2-- - 密码包含其中之二
+      3-- - 密码包含其中之三
+      4-- - 密码包含其中之四 */
       return checkStrong(fieldValue) >= 3
     }
   }

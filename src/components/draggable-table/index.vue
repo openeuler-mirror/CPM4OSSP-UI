@@ -38,6 +38,7 @@ export default {
         }
       }
     }
+    // 使用jsx渲染方式
     return <a-table
       props={props}
       scopedSlots={ $scopedSlots }

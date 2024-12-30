@@ -33,6 +33,7 @@ export default {
   watch: {
     dataSource: {
       handler(val) {
+        // 表格数据改变滚动条过渡回到顶部
         if (this.ivTimer != null) {
           clearInterval(this.ivTimer)
           this.ivTimer == null
@@ -53,7 +54,9 @@ export default {
     }
   },
   mounted() {
+    // 初次获取表格高度
     this.getTableHeight()
+    // 窗口改变获取表格高度
     window.addEventListener('resize', this.getTableHeight)
   },
   beforeDestroy() {
@@ -61,6 +64,7 @@ export default {
   },
   methods: {
     getTableHeight() {
+      // 节流
       if (this.toTimer != null) return
       this.toTimer = setTimeout(() => {
         const { filter, tableWrap, pagination } = this.$refs
@@ -68,8 +72,10 @@ export default {
         this.toTimer = null
       }, 100)
     },
+    // 页码及每页条数改变
     pageChange(current, size) {
       const pagination = { ...this.pagination, current, size }
+      // 修改父组件分页对象
       this.$emit('on-pagination', pagination)
     }
   },

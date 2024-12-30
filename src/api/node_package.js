@@ -28,14 +28,27 @@ export function startThread(data) {
   })
 }
 
+// 获取软件包列表数据
 export function getPackageList(data) {
   return request({
-    url: '/node/getPackageInfo',
+    url: '/getPackageInfo',
+    method: 'post',
+    data,
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+  })
+}
+// 软件包列表刷新
+export function refreshPackageList(data) {
+  return request({
+    url: '/packageRefresh',
     method: 'post',
     data
   })
 }
 
+// 删除任务记录
 export function delTaskById(data) {
   return request({
     url: '/node/delTaskById',
@@ -47,6 +60,7 @@ export function delTaskById(data) {
   })
 }
 
+// 修改任务为已读状态
 export function setTaskViewed(data) {
   return request({
     url: '/node/setTaskViewed',
@@ -55,6 +69,7 @@ export function setTaskViewed(data) {
   })
 }
 
+// 获取当前节点可安装的软件包列表
 export function getInstallablePackage(data) {
   return request({
     timeout: 0,
@@ -64,6 +79,7 @@ export function getInstallablePackage(data) {
   })
 }
 
+// 根据关键字获取节点可安装的软件包
 export function getInstallablePackageByKeyword(data) {
   return request({
     url: '/node/searchSourcePackageInfo',
@@ -75,6 +91,7 @@ export function getInstallablePackageByKeyword(data) {
   })
 }
 
+// 获取可升级软件包列表
 export function getUpdateablePackage(nodeId) {
   return request({
     headers: {
@@ -86,6 +103,7 @@ export function getUpdateablePackage(nodeId) {
   })
 }
 
+// 获取安装软件依赖包
 export function queryDependency(data) {
   return request({
     headers: {
@@ -95,5 +113,26 @@ export function queryDependency(data) {
     url: '/pkg/queryDependency?nodeId=' + data.nodeId,
     method: 'post',
     data: { packageName: data.packageName }
+  })
+}
+
+// 查询软件包下服务器
+export function getNodeByPkgName(data) {
+  return request({
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8'
+    },
+    url: '/getNodeByPkgName',
+    method: 'post',
+    data
+  })
+}
+
+// 查询系统内软件包总数量
+export function getAllPkgCount(data) {
+  return request({
+    url: '/getAllPkgCount',
+    method: 'get',
+    data
   })
 }
