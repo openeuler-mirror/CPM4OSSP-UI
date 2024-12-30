@@ -15,6 +15,7 @@ import { validator, waiting } from '@/directive/directive'
 import VueDraggableResizable from 'vue-draggable-resizable'
 import CustomTable from '@/components/custom-table'
 
+// debug routerBase
 window.routerBase = window.routerBase === '<routerBase>' ? '' : window.routerBase
 
 Vue.config.productionTip = false
@@ -25,6 +26,7 @@ Vue.use(Tree)
 Vue.use(Progress)
 Vue.component('VueDraggableResizable', VueDraggableResizable)
 Vue.directive('waiting', waiting)
+// 全局注册二次封装的表格
 Vue.component('CustomTable', CustomTable)
 
 new Vue({
