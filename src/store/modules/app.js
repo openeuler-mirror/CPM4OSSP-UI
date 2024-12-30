@@ -3,106 +3,96 @@ import { ACTIVE_TAB_KEY, TAB_LIST_KEY, ACTIVE_MENU_KEY } from '../../utils/const
 const app = {
   state: {
     activeTabKey: sessionStorage.getItem(ACTIVE_TAB_KEY),
-    tabList: JSON.parse(sessionStorage.getItem(TAB_LIST_KEY)),
+    tabList: JSON.parse(sessionStorage.getItem(TAB_LIST_KEY)) || [],
     activeMenuKey: sessionStorage.getItem(ACTIVE_MENU_KEY)
   },
   mutations: {
     setActiveTabKey(state, activeKey) {
       state.activeTabKey = activeKey
+      sessionStorage.setItem(ACTIVE_TAB_KEY, activeKey)
     },
     setTabList(state, tabList) {
       state.tabList = tabList
+      sessionStorage.setItem(TAB_LIST_KEY, JSON.stringify(tabList))
     },
     setActiveMenuKey(state, activeMenuKey) {
       state.activeMenuKey = activeMenuKey
+      sessionStorage.setItem(ACTIVE_MENU_KEY, activeMenuKey)
     }
   },
   actions: {
     addTab({ commit, state, rootGetters }, tab) {
-      return new Promise((resolve) => {
-        const menus = rootGetters.getMenus
-        let currentMenu = {}
-        menus.forEach(menu => {
-          if (menu.childs) {
-            menu.childs.forEach(subMenu => {
-              if (subMenu.path === tab.path) {
-                currentMenu = subMenu
-              }
-            })
-          } else {
-            if (menu.path === tab.path) {
-              currentMenu = menu
-            }
-          }
-        })
-        tab.title = currentMenu.title
-        tab.id = currentMenu.id
-        let tabList = state.tabList || []
-        const index = tabList.findIndex(ele => ele.key === tab.key)
-        if (index > -1) {
-          commit('setActiveTabKey', tab.key)
-          sessionStorage.setItem(ACTIVE_TAB_KEY, tab.key)
-        } else {
-          tabList.push(tab)
-          commit('setTabList', tabList)
-          commit('setActiveTabKey', tab.key)
-          sessionStorage.setItem(ACTIVE_TAB_KEY, tab.key)
-          sessionStorage.setItem(TAB_LIST_KEY, JSON.stringify(tabList))
-        }
-        commit('setActiveMenuKey', tab.id)
-        sessionStorage.setItem(ACTIVE_MENU_KEY, tab.id)
-        resolve()
-      })
+      const menus = rootGetters.getMenus
+      let currentMenu = findMenuByPath(menus, tab.path)
+
+      if (!currentMenu) {
+        console.error('Menu not found for path:', tab.path)
+        return
+      }
+
+      tab.title = currentMenu.title
+      tab.id = currentMenu.id
+
+      let tabList = [...state.tabList]
+      const index = tabList.findIndex(ele => ele.key === tab.key)
+
+      if (index > -1) {
+        commit('setActiveTabKey', tab.key)
+      } else {
+        tabList.push(tab)
+        commit('setTabList', tabList)
+        commit('setActiveTabKey', tab.key)
+      }
+
+      commit('setActiveMenuKey', tab.id)
     },
     removeTab({ commit, state }, key) {
-      return new Promise((resolve) => {
-        let tabList = state.tabList
-        const index = tabList.findIndex(ele => ele.key === key)
-        tabList.splice(index, 1)
-        if (state.activeTabKey === key) {
-          const tempTab = tabList[Math.min(index, 0)]
-          if (state.activeTabKey !== tempTab.key) {
-            commit('setActiveTabKey', tempTab.key)
-            sessionStorage.setItem(ACTIVE_TAB_KEY, tempTab.key)
-          }
+      let tabList = [...state.tabList]
+      const index = tabList.findIndex(ele => ele.key === key)
+
+      if (index === -1) return
+
+      tabList.splice(index, 1)
+
+      if (state.activeTabKey === key) {
+        const tempTab = tabList[Math.max(0, index - 1)] || tabList[0]
+        if (tempTab && tempTab.key !== state.activeTabKey) {
+          commit('setActiveTabKey', tempTab.key)
         }
-        commit('setTabList', tabList)
-        sessionStorage.setItem(TAB_LIST_KEY, JSON.stringify(tabList))
-        resolve()
-      })
+      }
+
+      commit('setTabList', tabList)
     },
-    clearTabs({ commit, state }, isAll) {
+    clearTabs({ commit, state }, isAll = false) {
       if (isAll) {
         commit('setTabList', [])
         sessionStorage.removeItem(TAB_LIST_KEY)
         return
       }
-      let tabList = state.tabList
-      const index = tabList.findIndex(ele => ele.key === state.activeTabKey)
-      const currentTab = tabList[index]
-      tabList = [currentTab]
-      commit('setTabList', tabList)
-      sessionStorage.setItem(TAB_LIST_KEY, JSON.stringify(tabList))
+
+      const currentTab = state.tabList.find(ele => ele.key === state.activeTabKey)
+      commit('setTabList', currentTab ? [currentTab] : [])
     },
     activeMenu({ commit }, activeMenuKey) {
       commit('setActiveMenuKey', activeMenuKey)
-      sessionStorage.setItem(ACTIVE_MENU_KEY, activeMenuKey)
     }
   },
   getters: {
-    getTabList(state) {
-      return state.tabList
-    },
-    getActiveTabKey(state) {
-      return state.activeTabKey
-    },
-    getActiveMenuKey(state) {
-      return state.activeMenuKey
-    },
-    getGuideFlag(state) {
-      return state.guideFlag
+    getTabList: state => state.tabList,
+    getActiveTabKey: state => state.activeTabKey,
+    getActiveMenuKey: state => state.activeMenuKey
+  }
+}
+
+function findMenuByPath(menus, path) {
+  for (const menu of menus) {
+    if (menu.path === path) return menu
+    if (menu.childs) {
+      const subMenu = findMenuByPath(menu.childs, path)
+      if (subMenu) return subMenu
     }
   }
+  return null
 }
 
 export default app
