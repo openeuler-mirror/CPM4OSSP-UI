@@ -55,7 +55,7 @@ import NodeLayout from '@/pages/node/list/node-layout'
 import { nodelist, deletenode } from '@/api/node_group'
 import { getNodeStatus, setNodeLocalIp, getNodeList } from '@/api/node'
 import AllNode from './all_node.vue'
-import { deepClone, deepCloneV2 } from '@/utils/obj'
+import { deepClone } from '@/utils/obj'
 export default {
   components: {
     AllNode,
@@ -103,12 +103,13 @@ export default {
     }
   },
   mounted() {
-    setTimeout(() => {
-      this.tableHeight = this.$refs.listSet.clientHeight - 140
-    })
+    this.calculateTableHeight()
     this.loadData()
   },
   methods: {
+    calculateTableHeight() {
+      this.tableHeight = this.$refs.listSet.clientHeight - 140
+    },
     nodelist() {
       this.loading = true
       nodelist({ groupId: this.parentMsg.id, pageNum: 1, pageSize: 99999 }).then(res => {
@@ -204,17 +205,19 @@ export default {
       })
     },
     // 加载数据
-    loadData() {
+    async loadData() {
       this.loading = true
-      this.nodeMsgs = []
-      getNodeList().then((res) => {
+      try {
+        const res = await getNodeList()
         if (res.code === 200) {
           this.nodeMsgs = res.data || []
-          this.nodelist()
+          this.fetchNodeList()
         }
-      }).finally(() => {
-
-      })
+      } catch (error) {
+        console.error('获取节点信息失败:', error)
+      } finally {
+        this.loading = false
+      }
     },
     // 关闭抽屉层
     onClose() {
@@ -228,7 +231,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//  .listSet{
-//   height:calc(100vh - 210px)
-//  }
+.list-set {
+  height: calc(100vh - 145px);
+}
+
+.filter {
+  margin-bottom: 16px;
+}
+
+.node-manager {
+  .ant-drawer-content-wrapper {
+    background-color: #f0f2f5;
+  }
+}
 </style>
